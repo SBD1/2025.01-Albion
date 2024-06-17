@@ -1,0 +1,1 @@
+<iframe width="1351" height="480" src="https://www.youtube.com/embed/FulydBAGxnI" title="ENTREGA 2 - SGBD1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
