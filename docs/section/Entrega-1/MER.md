@@ -22,3 +22,9 @@ Para maior liberdade de visualização, veja pela versão PDF. <br>
 
 Para maior liberdade de visualização, veja pela versão PDF. <br>
 [Confira o PDF aqui](../../assets/merV2.pdf)
+
+### Versão 3
+![MER v3](../../assets/merV3.png)
+
+Para maior liberdade de visualização, veja pela versão PDF. <br>
+[Confira o PDF aqui](../../assets/merV3.pdf)
