@@ -28,4 +28,22 @@ Agora, Albion é um continente fragmentado, tomado por salas ancestrais e dungeo
 
 Você é um dos poucos com a coragem de atravessar as muralhas do desconhecido. Escolha sua linhagem, aprimore-se com armaduras lendárias, artefatos mágicos e armas esquecidas pelo tempo. Derrote bosses, conquiste os tesouros e escreva seu próprio destino.
 
+## Documentação
 
+### Padrões de Commit
+
+A equipe segue os seguintes padrões para a organização do histórico de commits do projeto:
+
+- **[tipo](Escopo da Alteração)**: Descrição do commit.
+
+**Tipos:**
+
+- **Feat**: Nova funcionalidade.
+- **Fix**: Ajuste de funcionalidades.
+- **Docs**: Alterações na documentação do projeto.
+- **Style**: Alterações na estilização.
+- **Deps**: Instalação de dependências.
+
+**Exemplo de Commit**:
+
+`[docs](Padronização de Commits): Criado o arquivo que define os padrões de commit que a equipe seguirá durante o desenvolvimento do projeto`
