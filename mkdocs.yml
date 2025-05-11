@@ -1,0 +1,36 @@
+site_name: Albion 
+
+repo_name: Banco de Dados Albion
+repo_url: https://github.com/daviRolvr/2025.1-Albion
+
+nav: 
+  - Início: index.md
+
+theme: 
+  name: material
+  language: pt-BR
+
+  features:
+    - content.code.annotate
+      - content.tabs.link
+      - header.autohide
+      - navigation.instant
+      - navigation.top
+      - navigation.tracking
+  
+  palette:
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: red
+    accent: red
+    toggle:
+      icon: material/weather-night
+      name: Tema claro
+
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: red
+    accent: red
+    toggle:
+      icon: material/weather-sunny
+      name: Tema escuro
