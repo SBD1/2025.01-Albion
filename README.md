@@ -1,49 +1,93 @@
-# 2025.1-Albion
+# 🌍 2025.1 - Albion
 
-Este repositório contém o desenvolvimento do projeto **Albion**, realizado na disciplina de **Sistemas de Banco de Dados 1 (SBD1)** no semestre 2025.1, do curso de Engenharia de Software da Universidade de Brasília (UnB).
+![Albion](https://raw.githubusercontent.com/daviRolvr/2025.1-Albion/mainDoc/docs/assets/albion.jpg)
 
-## Sobre o Jogo
+🎮 Bem-vindo ao universo de **Albion** – um jogo solo de fantasia épica desenvolvido na disciplina de **Sistemas de Banco de Dados 1 (SBD1)**, no semestre 2025.1, do curso de **Engenharia de Software da Universidade de Brasília (UnB)**.
 
-**Albion** é um jogo solo no qual o jogador pode escolher seu personagem entre quatro raças iniciais, cada uma com habilidades e características únicas:
+---
 
-- 🛡️ **Zoido**: Seres misteriosos que veem além do véu, dominando e invocando os espíritos dos mortos.
-- 🔱 **Titans**: Guerreiros colossais com múltiplos braços, portadores de força brutal e múltiplas armas.
-- 🔮 **Espiritualistas**: Mestres da essência arcana, capazes de manipular realidades com suas magias versáteis.
-- 🐉 **Dracônicos**: Herdeiros do fogo primordial, capazes de assumir formas dracônicas em combate.
+## ✨ Sobre o Jogo
 
-O jogo propõe uma experiência de exploração, combate e progressão em um mundo repleto de fantasias. O objetivo é enfrentar desafios como bosses e explorar dungeons, enquanto coleta itens valiosos, como armaduras, armas e artefatos mágicos.
+Prepare-se para uma jornada inesquecível!
 
-## História do Jogo
+Em **Albion**, você assume o papel de um herói lendário, escolhendo sua origem entre **quatro raças místicas**, cada uma com habilidades únicas e estilos de jogo próprios.
 
-Há eras, o mundo de Albion era moldado apenas pelas forças da natureza — até que as primeiras espécies despertaram de um sono ancestral. Quatro grandes linhagens se ergueram das profundezas do mundo:
+Você explorará um mundo vasto, repleto de **dungeons amaldiçoadas**, **bosses brutais** e **itens mágicos raríssimos**. Encare desafios, colete artefatos e escreva seu próprio destino em um continente onde cada sala guarda um segredo.
 
-- **Dracônicos**, herdeiros do fogo primordial, capazes de assumir formas dracônicas em combate.
-- **Espiritualistas**, mestres da essência arcana, capazes de manipular realidades com suas magias versáteis.
-- **Titãs**, guerreiros colossais com múltiplos braços, portadores de força brutal e múltiplas armas.
-- **Zoiudos**, seres misteriosos que veem além do véu, dominando e invocando os espíritos dos mortos.
+---
 
-Durante séculos, as quatro linhagens viveram em equilíbrio frágil — até que um artefato esquecido foi descoberto: o **Núcleo Arcano**, um cristal capaz de dobrar a realidade ao desejo de quem o possui.
+## 🧙‍♂️ Escolha Seu Personagem
 
-Agora, Albion é um continente fragmentado, tomado por salas ancestrais e dungeons amaldiçoadas, onde cada tesouro é guardado por uma entidade poderosa, cada corredor guarda perigos ocultos, e nem todos os que falam contigo desejam te ajudar.
+No início da jornada, o jogador deve escolher uma entre as quatro raças ancestrais:
 
-Você é um dos poucos com a coragem de atravessar as muralhas do desconhecido. Escolha sua linhagem, aprimore-se com armaduras lendárias, artefatos mágicos e armas esquecidas pelo tempo. Derrote bosses, conquiste os tesouros e escreva seu próprio destino.
+- 🛡️ **Zoiudo**  
+  Seres enigmáticos que enxergam além do mundo físico. Dominam os espíritos dos mortos e são mestres da necromancia. Se você gosta de **estratégia e invocação sombria**, essa é a escolha certa.
 
-## Documentação
+- 🔱 **Titans**  
+  Colossos de guerra com múltiplos braços. Empunham diversas armas ao mesmo tempo e esmagam tudo em seu caminho. Perfeitos para quem curte **combate direto e muita força bruta**.
 
-### Padrões de Commit
+- 🔮 **Espiritualistas**  
+  Manipuladores da realidade, controlam a essência mágica de Albion. Usam feitiços criativos, poderosos e versáteis. Escolha ideal para fãs de **magia arcana e táticas imprevisíveis**.
 
-A equipe segue os seguintes padrões para a organização do histórico de commits do projeto:
+- 🐉 **Dracônicos**  
+  Herdeiros do fogo ancestral. Podem se transformar em dragões e varrer seus inimigos com chamas. Uma escolha perfeita para quem busca **poder, presença e destruição massiva**.
 
-- **[tipo](Escopo da Alteração)**: Descrição do commit.
+---
 
-**Tipos:**
+## 🗺️ A História de Albion
 
-- **Feat**: Nova funcionalidade.
-- **Fix**: Ajuste de funcionalidades.
-- **Docs**: Alterações na documentação do projeto.
-- **Style**: Alterações na estilização.
-- **Deps**: Instalação de dependências.
+Muito antes dos homens, Albion era regido pelas forças selvagens da natureza. Mas então, quatro grandes raças despertaram:
 
-**Exemplo de Commit**:
+> 🔥 Dracônicos, moldados pelo fogo primordial.  
+> ✨ Espiritualistas, tecelões da magia arcana.  
+> 💪 Titãs, guerreiros indomáveis.  
+> 🕯️ Zoiudos, mestres do mundo espiritual.
 
-`[docs](Padronização de Commits): Criado o arquivo que define os padrões de commit que a equipe seguirá durante o desenvolvimento do projeto`
+Durante séculos, coexistiram em equilíbrio... até que **o Núcleo Arcano**, um cristal proibido com poder de **moldar a realidade**, foi descoberto.
+
+Agora, Albion está em caos: dungeons surgiram, criaturas ancestrais despertaram e o poder do Núcleo está prestes a cair em mãos erradas.
+
+E você?  
+Está pronto para mergulhar nesse mundo perigoso e conquistar sua glória?
+
+---
+
+## ⚔️ Mecânicas Principais
+
+- **Criação de Personagem**  
+  Personalize seu herói e escolha uma raça com habilidades únicas.
+
+- **Exploração e Progressão**  
+  Avance por um mapa cheio de salas e dungeons misteriosas — cada uma com suas armadilhas, tesouros e bosses.
+
+- **Itens e Equipamentos**  
+  Colete **armaduras lendárias**, **armas místicas** e **artefatos mágicos** que fortalecem seu personagem.
+
+- **Interações com NPCs**  
+  Nem todo personagem é confiável. Alguns ajudarão. Outros… nem tanto. Cuidado com em quem você confia!
+
+---
+
+## 🧑‍💻 Equipe de Desenvolvimento
+
+Feito com 💜 por estudantes da Engenharia de Software da UnB:
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><a href="https://github.com/cibelinda"><img src="https://github.com/cibelinda.png" width="100px;" alt=""/><br /><sub><b>Cibelly Lourenço</b></sub></a></td>
+      <td align="center"><a href="https://github.com/daviRolvr"><img src="https://github.com/daviRolvr.png" width="100px;" alt=""/><br /><sub><b>Davi Emanuel</b></sub></a></td>
+      <td align="center"><a href="https://github.com/oicruc"><img src="https://github.com/oicruc.png" width="100px;" alt=""/><br /><sub><b>Davi Curcio</b></sub></a></td>
+      <td align="center"><a href="https://github.com/SAnjos3"><img src="https://github.com/SAnjos3.png" width="100px;" alt=""/><br /><sub><b>Gabriel Soares</b></sub></a></td>
+      <td align="center"><a href="https://github.com/leohssjr"><img src="https://github.com/leohssjr.png" width="100px;" alt=""/><br /><sub><b>Leonardo Sauma</b></sub></a></td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 🚀 Bora Jogar?
+
+Escolha sua linhagem, explore o desconhecido e torne-se uma lenda em **Albion**.  
+A aventura só está começando!
+
