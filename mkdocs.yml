@@ -5,10 +5,17 @@ repo_url: https://github.com/daviRolvr/2025.1-Albion
 
 nav: 
   - Início: index.md
+  - Entrega 1:
+    - MER: section1/Entrega-1/1-MER.md
+    - Modelo Relacional: sections/Entrega-1/2-ModeloRelacional.md
+    - Dicionário de Dados: sections/Entrega-1/3-DicionarioDados.md
+    - Vídeo de Apresentação: sections/Entrega-1/4-VideoApresentacao.md
 
-theme: 
+heme: 
   name: material
   language: pt-BR
+  favicon: assets/logoAlbion.png
+  logo: assets/logoAlbion.png
 
   features:
     - content.code.annotate
