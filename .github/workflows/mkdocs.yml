@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Configure Git Credentials
         run: |
           git config user.name 'github-actions[bot]'
@@ -19,7 +21,12 @@ jobs:
           python-version: 3.x
       - uses: actions/cache@v4
         with:
-          key: ${{ github.ref }}
-          path: .cache
-      - run: pip install mkdocs-material
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          path: ~/.cache/pip
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs-material pillow cairosvg
       - run: mkdocs gh-deploy --force
