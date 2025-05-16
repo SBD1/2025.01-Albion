@@ -19,11 +19,11 @@ theme:
 
   features:
     - content.code.annotate
-    - content.tabs.link
-    - header.autohide
-    - navigation.instant
-    - navigation.top
-    - navigation.tracking
+      - content.tabs.link
+      - header.autohide
+      - navigation.instant
+      - navigation.top
+      - navigation.tracking
   
   palette:
   - media: "(prefers-color-scheme: dark)"
