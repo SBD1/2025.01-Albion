@@ -2,6 +2,15 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
 
+def start_game(personagemId, conn, cur):
+    cur.execute("SELECT * FROM PERSONAGEM WHERE id_personagem = %s", (personagemId,))
+    personagem = cur.fetchone()
+    if not personagem:
+        return None
+    print(f"Bem-vindo ao jogo, {personagem['nome']}!")
+    return personagem
+
+
 def criar_conta(username, senha, conn, cur):
     cur.execute("SELECT * FROM USUARIO WHERE username = %s AND senha = %s",(username,senha))
     existe_usuario = cur.fetchall()
