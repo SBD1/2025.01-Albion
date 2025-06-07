@@ -28,17 +28,13 @@ def criar_cursor():
         try:
             cursor = conn.cursor()
             print("Cursor criado com sucesso!")
-            return cursor
+            return conn, cursor
         
         except Exception as e:
             print(f"Erro ao criar cursor {e}" )
-        
-        finally:
-            cursor.close()
             conn.close()
+            return None, None
     
     else:
         print("Erro ao obter conexão")
-
-
-criar_cursor()
+        return None 
