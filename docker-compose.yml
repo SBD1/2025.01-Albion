@@ -1,5 +1,5 @@
 services:
-  db:
+  banco_de_dados:
     container_name: albion_db
     image: postgres:latest
     ports:
@@ -8,6 +8,19 @@ services:
       - postgres-data:/var/lib/postgresql/data
     env_file:
       - ./.env
+  
+  controlador_de_migrations:
+    image: flyway/flyway:latest
+    container_name: game_controlador_de_migrations
+    depends_on:  
+      - banco_de_dados
+    environment:
+      FLYWAY_URL: jdbc:postgresql://banco_de_dados:5432/albion
+      FLYWAY_USER: postgres
+      FLYWAY_PASSWORD: postgres
+    volumes:
+      - ./migrations:/flyway/sql
+    entrypoint: ["flyway", "migrate"]
     
 volumes:
   postgres-data:
