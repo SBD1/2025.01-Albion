@@ -7,7 +7,7 @@ load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 def conectar_banco():
     try:
         conn = psycopg2.connect(
-            dbname = os.getenv("POSTGRES_BD","postgres"),
+            dbname = os.getenv("POSTGRES_BD","albion"),
             user = os.getenv("POSTGRES_USER","postgres"),
             password = os.getenv("POSTGRES_PASSWORD","postgres"),
             host = os.getenv("DATABASE_HOSTNAME", "localhost"),
