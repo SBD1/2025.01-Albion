@@ -15,11 +15,14 @@ services:
     depends_on:  
       - banco_de_dados
     environment:
+      FLYWAY_CLEAN_DISABLED: "false"
       FLYWAY_URL: jdbc:postgresql://banco_de_dados:5432/albion
       FLYWAY_USER: postgres
       FLYWAY_PASSWORD: postgres
     volumes:
       - ./migrations:/flyway/sql
+    # command: ["repair"]
+    # entrypoint: ["flyway", "clean"]
     entrypoint: ["flyway", "migrate"]
     
 volumes:
