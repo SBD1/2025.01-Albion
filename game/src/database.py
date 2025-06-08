@@ -13,7 +13,7 @@ def conectar_banco():
             host = os.getenv("DATABASE_HOSTNAME", "localhost"),
             port = os.getenv("DATABASE_PORT", 5432)
         )
-        print(f"Conexão feita com sucesso: {conn}")
+        # print(f"Conexão feita com sucesso: {conn}")
         conn.autocommit = True
         return conn
     
@@ -27,7 +27,7 @@ def criar_cursor():
     if conn:
         try:
             cursor = conn.cursor(cursor_factory=RealDictCursor)
-            print("Cursor criado com sucesso!")
+            # print("Cursor criado com sucesso!")
             return conn, cursor
         
         except Exception as e:

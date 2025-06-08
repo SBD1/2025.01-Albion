@@ -7,7 +7,7 @@ DECLARE
     v_id INTEGER;
 
 BEGIN
-    INSERT INTO usuario(username, senha)
+    INSERT INTO public.usuario(username, password)
     VALUES (p_username, p_senha)
     RETURNING id_usuario INTO v_id;
 

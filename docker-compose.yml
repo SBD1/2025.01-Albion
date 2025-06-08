@@ -22,7 +22,7 @@ services:
     volumes:
       - ./migrations:/flyway/sql
     # command: ["repair"]
-    #entrypoint: [ "flyway", "clean" ]
+    # entrypoint: [ "flyway", "clean" ]
     entrypoint: [ "flyway", "migrate" ]
 
 volumes:
