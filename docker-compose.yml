@@ -8,11 +8,11 @@ services:
       - postgres-data:/var/lib/postgresql/data
     env_file:
       - ./.env
-  
-  controlador_de_migrations:
+
+  flyway:
     image: flyway/flyway:latest
-    container_name: game_controlador_de_migrations
-    depends_on:  
+    container_name: flyway_migrator
+    depends_on:
       - banco_de_dados
     environment:
       FLYWAY_CLEAN_DISABLED: "false"
@@ -22,8 +22,8 @@ services:
     volumes:
       - ./migrations:/flyway/sql
     # command: ["repair"]
-    # entrypoint: ["flyway", "clean"]
-    entrypoint: ["flyway", "migrate"]
-    
+    #entrypoint: [ "flyway", "clean" ]
+    entrypoint: [ "flyway", "migrate" ]
+
 volumes:
   postgres-data:
