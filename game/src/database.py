@@ -26,7 +26,7 @@ def criar_cursor():
 
     if conn:
         try:
-            cursor = conn.cursor()
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
             print("Cursor criado com sucesso!")
             return conn, cursor
         
