@@ -6,6 +6,9 @@ from ascii_art import albion_ascii, encerrar_ascii
 import getpass
 from limpar_tela import limpar_tela
 from operadores.register import register_user
+from operadores.login import login
+from operadores.visualizar_personagens import visualizar_personagens
+from database import criar_cursor
 
 def logar_usuario():
     opcoes_login = ["Entrar", "Criar Conta", "Sair"]
@@ -15,19 +18,21 @@ def logar_usuario():
                         clear_screen=False) 
 
     while True:
+        cursor = criar_cursor()
         opcao = logar.show()
         if opcao == 0:
             limpar_tela()
             username = input("Digite seu nome de usuário: ")
             password = getpass.getpass("Digite sua senha: ")
             limpar_tela()
-            id_usuario = login(username, password)
+            id_usuario = login(username, password, cursor)
+            
         elif opcao == 1:
             limpar_tela()
             username = input("Digite seu nome de usuário: ")
             password = getpass.getpass("Digite sua senha: ")
             limpar_tela()
-            id_usuario = register_user(username, password)
+            id_usuario = register_user(username, password, cursor)
         elif opcao == 2:
             limpar_tela()
             print(encerrar_ascii)

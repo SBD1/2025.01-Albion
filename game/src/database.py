@@ -28,13 +28,12 @@ def criar_cursor():
         try:
             cursor = conn.cursor(cursor_factory=RealDictCursor)
             # print("Cursor criado com sucesso!")
-            return conn, cursor
+            return cursor
         
         except Exception as e:
             print(f"Erro ao criar cursor {e}" )
             conn.close()
-            return None, None
-    
+            return None
     else:
         print("Erro ao obter conexão")
         return None 

@@ -1,9 +1,6 @@
 import psycopg2
-from database import criar_cursor
-
-def register_user(username, password):
-    conn, cursor = criar_cursor()
-    if conn and cursor:
+def register_user(username, password, cursor):
+    if cursor:
         cursor.execute(f"SELECT * FROM USUARIO WHERE username = '{username}'")
         if cursor.fetchone():
             print(f"❌ ERRO: Usuário {username} já existe.")
