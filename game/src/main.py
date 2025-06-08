@@ -89,7 +89,7 @@ def main():
     id_usuario = logar_usuario()
     rows_personagens = menu_personagens(id_usuario)
     id_personagem = selecionar_personagem(rows_personagens)
-    print(id_personagem)
+    print(f"ID DO PERSONAGEM SELECIONADO: {id_personagem}")
     
 if __name__ == "__main__":
     main()

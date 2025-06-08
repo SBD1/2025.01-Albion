@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS PERSONAGEM(
     id_personagem  SERIAL PRIMARY KEY,
     id_usuario     INTEGER NOT NULL REFERENCES public.USUARIO(id_usuario),
+    id_sala        INTEGER NOT NULL DEFAULT 1 REFERENCES public.SALA(id_sala) ON DELETE SET DEFAULT,
     nome           VARCHAR(50) NOT NULL,
     nivel          INTEGER NOT NULL DEFAULT 1, 
     qtd_ouro       INTEGER NOT NULL DEFAULT 0,
