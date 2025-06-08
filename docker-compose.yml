@@ -8,19 +8,22 @@ services:
       - postgres-data:/var/lib/postgresql/data
     env_file:
       - ./.env
-  
-  controlador_de_migrations:
+
+  flyway:
     image: flyway/flyway:latest
-    container_name: game_controlador_de_migrations
-    depends_on:  
+    container_name: flyway_migrator
+    depends_on:
       - banco_de_dados
     environment:
+      FLYWAY_CLEAN_DISABLED: "false"
       FLYWAY_URL: jdbc:postgresql://banco_de_dados:5432/albion
       FLYWAY_USER: postgres
       FLYWAY_PASSWORD: postgres
     volumes:
       - ./migrations:/flyway/sql
-    entrypoint: ["flyway", "migrate"]
-    
+    # command: ["repair"]
+    # entrypoint: [ "flyway", "clean" ]
+    entrypoint: [ "flyway", "migrate" ]
+
 volumes:
   postgres-data:

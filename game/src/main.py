@@ -1,37 +1,42 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from simple_term_menu import TerminalMenu
 import os
+from ascii_art import albion_ascii, encerrar_ascii
+import getpass
+from limpar_tela import limpar_tela
+from operadores.register import register_user
 
-def start_game(personagemId, conn, cur):
-    cur.execute("SELECT * FROM PERSONAGEM WHERE id_personagem = %s", (personagemId,))
-    personagem = cur.fetchone()
-    if not personagem:
-        return None
-    print(f"Bem-vindo ao jogo, {personagem['nome']}!")
-    return personagem
+def logar_usuario():
+    opcoes_login = ["Entrar", "Criar Conta", "Sair"]
+    logar = TerminalMenu(opcoes_login,
+                        menu_cursor_style=("fg_green", "bold"),
+                        menu_highlight_style=("fg_green", "bold"),
+                        clear_screen=False) 
 
-
-def criar_conta(username, senha, conn, cur):
-    cur.execute("SELECT * FROM USUARIO WHERE username = %s AND senha = %s",(username,senha))
-    existe_usuario = cur.fetchall()
-    if existe_usuario:
-        return None
-    cur.execute("INSERT INTO USUARIO(username, senha) VALUES (%s, %s) RETURNING id_usuario;",(username,senha))
-    userId = cur.fetchone()
-    conn.commit()
-    return userId
-
-def validar_login(username, senha, cur):
-    cur.execute("SELECT * FROM USUARIO WHERE username = %s AND senha = %s",(username,senha))
-    user = cur.fetchall()
-    if user:
-        print(user)
-        return user[0]
-    return None
-
+    while True:
+        opcao = logar.show()
+        if opcao == 0:
+            limpar_tela()
+            username = input("Digite seu nome de usuário: ")
+            password = getpass.getpass("Digite sua senha: ")
+            limpar_tela()
+            id_usuario = login(username, password)
+        elif opcao == 1:
+            limpar_tela()
+            username = input("Digite seu nome de usuário: ")
+            password = getpass.getpass("Digite sua senha: ")
+            limpar_tela()
+            id_usuario = register_user(username, password)
+        elif opcao == 2:
+            limpar_tela()
+            print(encerrar_ascii)
+            break
 
 
 def main():
-    print("Albion")
+    print(albion_ascii)
+    logar_usuario()
+    
 if __name__ == "__main__":
     main()
