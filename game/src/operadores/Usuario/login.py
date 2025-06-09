@@ -11,7 +11,7 @@ def login(nome,senha,cursor):
             
             if resultado:
                 id = resultado["id_usuario"]
-                print("Usuario encontrado!")
+                #print("Usuario encontrado!")
 
             else:
                 print('Usuario não encontrado')
