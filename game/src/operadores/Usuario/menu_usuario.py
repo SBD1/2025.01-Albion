@@ -34,7 +34,6 @@ def menu_usuario():
             password = getpass.getpass("Digite sua senha: ")
             limpar_tela()
             register_user(username, password, cursor)
-            limpar_tela()
             return None, username
 
         elif opcao == 2:

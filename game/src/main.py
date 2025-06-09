@@ -18,6 +18,10 @@ def main():
                 break
             
             id_personagem = selecionar_personagem(resultado, id_usuario, username)
+
+            if not id_personagem:
+                continue
+
             print(f"ID DO PERSONAGEM SELECIONADO: {id_personagem}")
     
 if __name__ == "__main__":

@@ -21,8 +21,8 @@ def selecionar_personagem(rows,id_usuario,username):
     idx = menu.show()
     
     if opcoes[idx] == "Voltar":
-        menu_personagens(id_usuario,username)
         return None
+    
     elif idx == -1:
         print("Nenhum personagem selecionado.\n")
         return None
