@@ -21,9 +21,8 @@ services:
       FLYWAY_PASSWORD: postgres
     volumes:
       - ./migrations:/flyway/sql
-    # command: ["repair"]
-    # entrypoint: [ "flyway", "clean" ]
     entrypoint: [ "flyway", "migrate" ]
 
 volumes:
   postgres-data:
+    driver: local
