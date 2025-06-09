@@ -1,12 +1,10 @@
 from simple_term_menu import TerminalMenu
-import getpass
-from ascii_art import albion_ascii, encerrar_ascii
-from limpar_tela import limpar_tela
-from operadores.criar_personagem import criar_personagem
-from operadores.visualizar_personagens import visualizar_personagens
-from database import criar_cursor
-
-def menu_personagens(id_usuario):
+from game.src.operadores.Personagem.criar_personagem import criar_personagem
+from game.src.operadores.Personagem.visualizar_personagens import visualizar_personagens
+from game.src.database import criar_cursor
+from game.src.limpar_tela import limpar_tela
+def menu_personagens(id_usuario,username):
+    print(f"Usuário: {username}\n")
     opcoes = ["Criar Personagem", "Visualizar Personagens", "Sair"]
     menu = TerminalMenu(
         opcoes,
@@ -41,5 +39,4 @@ def menu_personagens(id_usuario):
             
         elif opcao == 2:
             limpar_tela()
-            print(encerrar_ascii)
-            break
+            return "voltar"
