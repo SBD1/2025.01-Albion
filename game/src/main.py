@@ -7,7 +7,10 @@ import getpass
 from limpar_tela import limpar_tela
 from operadores.register import register_user
 from operadores.login import login
+from operadores.menu_personagens import menu_personagens
 from operadores.visualizar_personagens import visualizar_personagens
+from operadores.selecionar_personagem import selecionar_personagem
+from operadores.criar_personagem import criar_personagem
 from database import criar_cursor
 
 def logar_usuario():
@@ -26,6 +29,8 @@ def logar_usuario():
             password = getpass.getpass("Digite sua senha: ")
             limpar_tela()
             id_usuario = login(username, password, cursor)
+            if id_usuario:
+                return id_usuario
             
         elif opcao == 1:
             limpar_tela()
@@ -33,15 +38,20 @@ def logar_usuario():
             password = getpass.getpass("Digite sua senha: ")
             limpar_tela()
             id_usuario = register_user(username, password, cursor)
+            if id_usuario:
+                return id_usuario
+
         elif opcao == 2:
             limpar_tela()
             print(encerrar_ascii)
             break
 
-
 def main():
     print(albion_ascii)
-    logar_usuario()
+    id_usuario = logar_usuario()
+    rows_personagens = menu_personagens(id_usuario)
+    id_personagem = selecionar_personagem(rows_personagens)
+    print(f"ID DO PERSONAGEM SELECIONADO: {id_personagem}")
     
 if __name__ == "__main__":
     main()
