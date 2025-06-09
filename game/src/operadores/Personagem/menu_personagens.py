@@ -3,8 +3,6 @@ from game.src.operadores.Personagem.criar_personagem import criar_personagem
 from game.src.operadores.Personagem.visualizar_personagens import visualizar_personagens
 from game.src.database import criar_cursor
 from game.src.limpar_tela import limpar_tela
-from game.src.operadores.Usuario.menu_usuario import menu_usuario
-
 def menu_personagens(id_usuario,username):
     print(f"Usuário: {username}\n")
     opcoes = ["Criar Personagem", "Visualizar Personagens", "Sair"]
