@@ -41,4 +41,4 @@ def menu_personagens(id_usuario,username):
             
         elif opcao == 2:
             limpar_tela()
-            menu_usuario()
+            return "voltar"
