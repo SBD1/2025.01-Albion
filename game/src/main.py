@@ -11,6 +11,7 @@ from operadores.menu_personagens import menu_personagens
 from operadores.visualizar_personagens import visualizar_personagens
 from operadores.selecionar_personagem import selecionar_personagem
 from operadores.criar_personagem import criar_personagem
+from operadores.mover_personagem import mover_personagem
 from database import criar_cursor
 
 def logar_usuario():
@@ -51,7 +52,8 @@ def main():
     id_usuario = logar_usuario()
     rows_personagens = menu_personagens(id_usuario)
     id_personagem = selecionar_personagem(rows_personagens)
-    print(f"ID DO PERSONAGEM SELECIONADO: {id_personagem}")
+    while True:
+        mover_personagem(id_personagem, criar_cursor())
     
 if __name__ == "__main__":
     main()

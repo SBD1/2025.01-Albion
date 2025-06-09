@@ -6,6 +6,7 @@ SELECT
     p.nome, 
     p.nivel, 
     p.qtd_ouro, 
+    s.nome AS nome_sala,
     CASE 
         WHEN z.id_personagem IS NOT NULL THEN 'Zoiudo'
         WHEN e.id_personagem IS NOT NULL THEN 'Espiritualista'
@@ -18,6 +19,7 @@ FROM public.personagem p
     LEFT JOIN public.espiritualista e ON p.id_personagem = e.id_personagem
     LEFT JOIN public.draconico d ON p.id_personagem = d.id_personagem
     LEFT JOIN public.titan t ON p.id_personagem = t.id_personagem
+    JOIN public.sala s ON p.id_sala = s.id_sala
 WHERE 
     p.id_usuario = {id_usuario};""")
 

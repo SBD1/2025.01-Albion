@@ -1,7 +1,7 @@
 from simple_term_menu import TerminalMenu
 
 def selecionar_personagem(rows):
-    opcoes = [f"{row['nome']} (Nível {row['nivel']}) (Ouro: {row['qtd_ouro']})" for row in rows]
+    opcoes = [f"{row['nome']} ({row['especie']}) (Nível {row['nivel']}) (Ouro: {row['qtd_ouro']}) (Localizado em: {row['nome_sala']})" for row in rows]
     opcoes.append("Voltar")
     if rows is None or len(rows) == 0:
         menu = TerminalMenu(
