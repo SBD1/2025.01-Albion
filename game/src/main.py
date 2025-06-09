@@ -1,6 +1,6 @@
-from src.operadores.Usuario.menu_usuario import menu_usuario
-from src.operadores.Personagem.menu_personagens import menu_personagens
-from src.operadores.Personagem.selecionar_personagem import selecionar_personagem
+from game.src.operadores.Usuario.menu_usuario import menu_usuario
+from game.src.operadores.Personagem.menu_personagens import menu_personagens
+from game.src.operadores.Personagem.selecionar_personagem import selecionar_personagem
 
 
 def main():

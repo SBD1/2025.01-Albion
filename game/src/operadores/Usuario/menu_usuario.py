@@ -1,11 +1,11 @@
 from simple_term_menu import TerminalMenu
 import sys
-from src.ascii_art import albion_ascii,encerrar_ascii
 import getpass
-from src.operadores.Usuario.register import register_user
-from src.operadores.Usuario.login import login
-from src.database import criar_cursor
-from src.limpar_tela import limpar_tela
+from game.src.ascii_art import albion_ascii,encerrar_ascii
+from game.src.operadores.Usuario.register import register_user
+from game.src.operadores.Usuario.login import login
+from game.src.database import criar_cursor
+from game.src.limpar_tela import limpar_tela
 def menu_usuario():
     
     opcoes_login = ["Entrar", "Criar Conta", "Sair"]
@@ -16,7 +16,7 @@ def menu_usuario():
 
     while True:
         print(albion_ascii)
-        
+
         cursor = criar_cursor()
         opcao = logar.show()
         if opcao == 0:

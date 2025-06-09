@@ -1,4 +1,3 @@
-import psycopg2
 def register_user(username, password, cursor):
     if cursor:
         cursor.execute(f"SELECT * FROM USUARIO WHERE username = '{username}'")
