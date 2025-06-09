@@ -4,7 +4,7 @@ def criar_personagem(id_usuario, nome_personagem, especie_personagem, cursor):
         id_personagem = cursor.fetchone()['f_cria_personagem']
         # print(id_personagem)
         if id_personagem is None:
-            print("❌ ERRO: Não foi possível criar personagem.")
+            print("❌ ERRO: Não foi possível criar personagem.\n")
             return False
         
         if especie_personagem == 'Zoiudo':

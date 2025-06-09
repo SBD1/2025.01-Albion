@@ -24,7 +24,7 @@ WHERE
     rows = cursor.fetchall()
     # print(resultado)
     if rows is None:
-        print("Nenhum personagem encontrado.")
+        print("Nenhum personagem encontrado.\n")
         return None
     else:
         return rows
