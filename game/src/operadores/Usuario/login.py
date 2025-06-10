@@ -14,11 +14,11 @@ def login(nome,senha,cursor):
                 #print("Usuario encontrado!")
 
             else:
-                print('Usuario não encontrado')
+                print('❌ Usuario não encontrado\n')
                 return None
 
         except Exception as e:
-            print(f"Erro ao verificar usuario: {e}")
+            print(f"❌ Erro ao verificar usuario: {e}\n")
             return None
 
     return id
