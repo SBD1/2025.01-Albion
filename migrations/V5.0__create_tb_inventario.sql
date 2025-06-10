@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS INVENTARIO (
+    id_inventario SERIAL PRIMARY KEY,
+    id_personagem INTEGER NOT NULL REFERENCES public.PERSONAGEM (id_personagem),
+    slots INTEGER NOT NULL
+)
