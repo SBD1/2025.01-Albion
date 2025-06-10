@@ -5,7 +5,7 @@ def selecionar_personagem(rows,id_usuario, username):
     if rows is None or len(rows) == 0:
         menu = TerminalMenu(
             opcoes,
-            title="Nenhum personagem encontrado.\n",
+            title="❌ Nenhum personagem encontrado.\n",
             menu_cursor_style=("fg_green", "bold"),
             menu_highlight_style=("fg_green", "bold"),
             clear_screen=False)
@@ -23,7 +23,7 @@ def selecionar_personagem(rows,id_usuario, username):
         return None
     
     elif idx == -1:
-        print("Nenhum personagem selecionado.\n")
+        print(" ❌ Nenhum personagem selecionado.\n")
         return None
     
     return rows[idx]['id_personagem']
