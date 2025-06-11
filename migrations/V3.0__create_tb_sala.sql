@@ -1,3 +1,4 @@
+
 CREATE TABLE IF NOT EXISTS SALA(
     id_sala       SERIAL PRIMARY KEY,
     nome          VARCHAR(50) NOT NULL,

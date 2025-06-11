@@ -1,3 +1,4 @@
+
 CREATE TABLE IF NOT EXISTS USUARIO(
     id_usuario   SERIAL PRIMARY KEY,
     username     VARCHAR(30) NOT NULL,
