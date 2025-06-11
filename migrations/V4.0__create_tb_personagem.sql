@@ -1,3 +1,4 @@
+
 CREATE TABLE IF NOT EXISTS PERSONAGEM(
     id_personagem  SERIAL PRIMARY KEY,
     id_usuario     INTEGER NOT NULL REFERENCES public.USUARIO(id_usuario),
