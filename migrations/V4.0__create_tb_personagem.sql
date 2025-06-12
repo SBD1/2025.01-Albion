@@ -1,47 +1,53 @@
-CREATE TABLE IF NOT EXISTS PERSONAGEM(
-    id_personagem  SERIAL PRIMARY KEY,
-    id_usuario     INTEGER NOT NULL REFERENCES public.USUARIO(id_usuario),
-    id_sala        INTEGER NOT NULL DEFAULT 1 REFERENCES public.SALA(id_sala) ON DELETE SET DEFAULT,
-    nome           VARCHAR(50) NOT NULL,
-    nivel          INTEGER NOT NULL DEFAULT 1, 
-    qtd_ouro       INTEGER NOT NULL DEFAULT 0,
-    experiencia    INTEGER NOT NULL DEFAULT 0,
-    vida_atual     INTEGER NOT NULL DEFAULT 100,
-    vida_maxima    INTEGER NOT NULL DEFAULT 100,
-    stamina_atual  INTEGER NOT NULL DEFAULT 100,
+CREATE TABLE IF NOT EXISTS PERSONAGEM (
+    id_personagem SERIAL PRIMARY KEY,
+    id_usuario INTEGER NOT NULL REFERENCES public.USUARIO (id_usuario),
+    id_sala INTEGER NOT NULL DEFAULT 1 REFERENCES public.SALA (id_sala) ON DELETE SET DEFAULT,
+    nome VARCHAR(50) NOT NULL,
+    nivel INTEGER NOT NULL DEFAULT 1,
+    qtd_ouro INTEGER NOT NULL DEFAULT 0,
+    exp_maxima INTEGER NOT NULL DEFAULT 100,
+    exp_atual INTEGER NOT NULL DEFAULT 0,
+    vida_atual INTEGER NOT NULL DEFAULT 100,
+    vida_maxima INTEGER NOT NULL DEFAULT 100,
+    stamina_atual INTEGER NOT NULL DEFAULT 100,
     stamina_maxima INTEGER NOT NULL DEFAULT 100,
-    ataque_fisico  INTEGER NOT NULL DEFAULT 10,
-    ataque_magico  INTEGER NOT NULL DEFAULT 10,
-    defesa_fisica  INTEGER NOT NULL DEFAULT 20,
-    defesa_magica  INTEGER NOT NULL DEFAULT 20,
-    UNIQUE(nome)
+    ataque_fisico INTEGER NOT NULL DEFAULT 10,
+    defesa_fisica INTEGER NOT NULL DEFAULT 20,
+    defesa_magica INTEGER NOT NULL DEFAULT 20,
+    UNIQUE (nome)
 );
 
-CREATE TABLE IF NOT EXISTS ZOIUDO(
-    id_zoiudo         SERIAL PRIMARY KEY,
-    id_personagem     INTEGER NOT NULL REFERENCES public.PERSONAGEM(id_personagem) ON DELETE CASCADE,
-    controla_fantasma BOOLEAN NOT NULL DEFAULT TRUE,
+CREATE TABLE IF NOT EXISTS ZOIUDO (
+    id_zoiudo SERIAL PRIMARY KEY,
+    id_personagem INTEGER NOT NULL REFERENCES public.PERSONAGEM (id_personagem) ON DELETE CASCADE,
+    slot_fantasma VARCHAR(50),
     UNIQUE (id_personagem)
 );
 
-CREATE TABLE IF NOT EXISTS ESPIRITUALISTA(
+CREATE TABLE IF NOT EXISTS ESPIRITUALISTA (
     id_espiritualista SERIAL PRIMARY KEY,
-    id_personagem     INTEGER NOT NULL REFERENCES public.PERSONAGEM(id_personagem) ON DELETE CASCADE,
-    mana_total        INTEGER DEFAULT 100 NOT NULL,
-    mana_atual        INTEGER DEFAULT 100 NOT NULL,
+    id_personagem INTEGER NOT NULL REFERENCES public.PERSONAGEM (id_personagem) ON DELETE CASCADE,
+    mana_total INTEGER DEFAULT 100 NOT NULL,
+    mana_atual INTEGER DEFAULT 100 NOT NULL,
+    ataque_magico INTEGER DEFAULT 10 NOT NULL,
     UNIQUE (id_personagem)
 );
 
-CREATE TABLE IF NOT EXISTS DRACONICO(
-    id_draconico    SERIAL PRIMARY KEY,
-    id_personagem   INTEGER NOT NULL REFERENCES public.PERSONAGEM(id_personagem) ON DELETE CASCADE,
-    tempo_em_dragao INTERVAL DEFAULT '00:01:00',
+CREATE TABLE IF NOT EXISTS DRACONICO (
+    id_draconico SERIAL PRIMARY KEY,
+    id_personagem INTEGER NOT NULL REFERENCES public.PERSONAGEM (id_personagem) ON DELETE CASCADE,
+    turnos_maximo_dragao INTEGER DEFAULT 3 NOT NULL,
+    turnos_recarga INTEGER DEFAULT 5 NOT NULL,
+    custo_stamina INTEGER DEFAULT 50 NOT NULL,
+    aumento_vida_atual INTEGER DEFAULT 20 NOT NULL,
+    aumento_ataque_fisico INTEGER DEFAULT 20 NOT NULL,
     UNIQUE (id_personagem)
 );
 
-CREATE TABLE IF NOT EXISTS TITAN(
-    id_titan        SERIAL PRIMARY KEY,
-    id_personagem   INTEGER NOT NULL REFERENCES public.PERSONAGEM(id_personagem) ON DELETE CASCADE,
-    capacidade_item INTEGER NOT NULL DEFAULT 4,
+CREATE TABLE IF NOT EXISTS TITAN (
+    id_titan SERIAL PRIMARY KEY,
+    id_personagem INTEGER NOT NULL REFERENCES public.PERSONAGEM (id_personagem) ON DELETE CASCADE,
+    slot_extra_arma_1 VARCHAR(100),
+    slot_extra_arma_2 VARCHAR(100),
     UNIQUE (id_personagem)
 );
