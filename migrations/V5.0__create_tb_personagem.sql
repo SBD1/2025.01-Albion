@@ -17,10 +17,22 @@ CREATE TABLE IF NOT EXISTS PERSONAGEM (
     UNIQUE (nome)
 );
 
+CREATE TABLE IF NOT EXISTS FANTASMA (
+    id_fantasma SERIAL PRIMARY KEY,
+    nome VARCHAR(20),
+    nivel INTEGER NOT NULL DEFAULT 1,
+    exp_maxima INTEGER NOT NULL DEFAULT 100,
+    exp_atual INTEGER NOT NULL DEFAULT 0,
+    ataque_fisico INTEGER NOT NULL DEFAULT 1,
+    ataque_magico INTEGER DEFAULT 10 NOT NULL,
+    defesa_fisica INTEGER NOT NULL DEFAULT 10,
+    defesa_magica INTEGER NOT NULL DEFAULT 10
+);
+
 CREATE TABLE IF NOT EXISTS ZOIUDO (
     id_zoiudo SERIAL PRIMARY KEY,
     id_personagem INTEGER NOT NULL REFERENCES public.PERSONAGEM (id_personagem) ON DELETE CASCADE,
-    controla_fantasma BOOLEAN NOT NULL DEFAULT TRUE,
+    id_fantasma INTEGER UNIQUE REFERENCES public.FANTASMA (id_fantasma),
     UNIQUE (id_personagem)
 );
 
