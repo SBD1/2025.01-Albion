@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS ITEM (
 -- Subclasse Item - Equipáveis --
 CREATE TABLE IF NOT EXISTS EQUIPAVEL (
     id_item INTEGER PRIMARY KEY REFERENCES public.ITEM (id_item),
-    durabilidade INTEGER NOT NULL,
+    durabilidade_maxima INTEGER NOT NULL,
     tipo_equipavel VARCHAR(50) NOT NULL CHECK (
         tipo_equipavel IN (
             'Arma',
@@ -28,9 +28,9 @@ CREATE TABLE IF NOT EXISTS ARMA (
 --Subclasse Equipavel - Armadura --
 CREATE TABLE IF NOT EXISTS ARMADURA (
     id_item INTEGER PRIMARY KEY REFERENCES public.EQUIPAVEL (id_item),
-    aumento_defesa_fisica INTEGER,
-    aumento_defesa_magica INTEGER,
-    aumento_vida_maxima INTEGER NOT NULL
+    aumento_defesa_fisica INTEGER NOT NULL DEFAULT 0,
+    aumento_defesa_magica INTEGER NOT NULL DEFAULT 0,
+    aumento_vida_maxima INTEGER NOT NULL DEFAULT 0
 );
 --Subclasse Equipavel - Artefato --
 CREATE TABLE IF NOT EXISTS ARTEFATO (
@@ -41,7 +41,6 @@ CREATE TABLE IF NOT EXISTS ARTEFATO (
 -- Subclasse Item - Nao-equipavel --
 CREATE TABLE IF NOT EXISTS NEQUIPAVEL (
     id_item INTEGER PRIMARY KEY REFERENCES public.ITEM (id_item),
-    quantidade INTEGER NOT NULL,
     tipo_nequipavel VARCHAR(100) NOT NULL CHECK (
         tipo_nequipavel in ('Comida', 'Pocao')
     )
@@ -56,4 +55,12 @@ CREATE TABLE IF NOT EXISTS COMIDA (
 CREATE TABLE IF NOT EXISTS POCAO (
     id_item INTEGER PRIMARY KEY REFERENCES public.NEQUIPAVEL (id_item),
     aumento_mana_atual INTEGER NOT NULL
+);
+
+-- Tabela Instancia Item
+CREATE TABLE IF NOT EXISTS INSTANCIA_ITEM (
+    id_instancia SERIAL PRIMARY KEY,
+    id_item INTEGER NOT NULL REFERENCES public.ITEM (id_item),
+    durabilidade_atual INTEGER, -- NULL para não-equipáveis
+    quantidade INTEGER NOT NULL DEFAULT 1 CHECK (quantidade >= 1)
 );

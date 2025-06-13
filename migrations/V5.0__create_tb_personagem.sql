@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS ESPIRITUALISTA (
     mana_total INTEGER DEFAULT 100 NOT NULL,
     mana_atual INTEGER DEFAULT 100 NOT NULL,
     ataque_magico INTEGER DEFAULT 10 NOT NULL,
+    slot_artefato INTEGER UNIQUE REFERENCES public.INSTANCIA_ITEM (id_instancia),
     UNIQUE (id_personagem)
 );
 
@@ -47,7 +48,7 @@ CREATE TABLE IF NOT EXISTS DRACONICO (
 CREATE TABLE IF NOT EXISTS TITAN (
     id_titan SERIAL PRIMARY KEY,
     id_personagem INTEGER NOT NULL REFERENCES public.PERSONAGEM (id_personagem) ON DELETE CASCADE,
-    slot_extra_arma_1 VARCHAR(100),
-    slot_extra_arma_2 VARCHAR(100),
+    slot_extra_arma_1 INTEGER UNIQUE REFERENCES public.INSTANCIA_ITEM (id_instancia),
+    slot_extra_arma_2 INTEGER UNIQUE REFERENCES public.INSTANCIA_ITEM (id_instancia),
     UNIQUE (id_personagem)
 );

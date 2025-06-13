@@ -22,6 +22,7 @@ services:
     volumes:
       - ./migrations:/flyway/sql
     entrypoint: [ "flyway", "migrate" ]
+    #entrypoint: [ "flyway", "clean" ]
 
 volumes:
   postgres-data:
