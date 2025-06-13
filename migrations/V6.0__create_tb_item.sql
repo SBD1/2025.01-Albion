@@ -1,6 +1,7 @@
 -- Superclasse - Item --
 CREATE TABLE IF NOT EXISTS ITEM (
-    nome VARCHAR(100) PRIMARY KEY,
+    id_item SERIAL PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL,
     descricao TEXT,
     nivel INTEGER NOT NULL,
     tipo_item VARCHAR(50) NOT NULL CHECK (
@@ -9,7 +10,7 @@ CREATE TABLE IF NOT EXISTS ITEM (
 );
 -- Subclasse Item - Equipáveis --
 CREATE TABLE IF NOT EXISTS EQUIPAVEL (
-    nome_equipavel VARCHAR(100) PRIMARY KEY REFERENCES public.ITEM (nome),
+    id_item INTEGER PRIMARY KEY REFERENCES public.ITEM (id_item),
     durabilidade INTEGER NOT NULL,
     tipo_equipavel VARCHAR(50) NOT NULL CHECK (
         tipo_equipavel IN (
@@ -21,25 +22,25 @@ CREATE TABLE IF NOT EXISTS EQUIPAVEL (
 );
 -- Subclasse Equipavel - Arma --
 CREATE TABLE IF NOT EXISTS ARMA (
-    nome_arma VARCHAR(100) PRIMARY KEY REFERENCES public.EQUIPAVEL (nome_equipavel),
+    id_item INTEGER PRIMARY KEY REFERENCES public.EQUIPAVEL (id_item),
     aumento_ataque_fisico INTEGER NOT NULL
 );
 --Subclasse Equipavel - Armadura --
 CREATE TABLE IF NOT EXISTS ARMADURA (
-    nome_armadura VARCHAR(100) PRIMARY KEY REFERENCES public.EQUIPAVEL (nome_equipavel),
+    id_item INTEGER PRIMARY KEY REFERENCES public.EQUIPAVEL (id_item),
     aumento_defesa_fisica INTEGER,
     aumento_defesa_magica INTEGER,
     aumento_vida_maxima INTEGER NOT NULL
 );
 --Subclasse Equipavel - Artefato --
 CREATE TABLE IF NOT EXISTS ARTEFATO (
-    nome_artefato VARCHAR(100) PRIMARY KEY REFERENCES public.EQUIPAVEL (nome_equipavel),
+    id_item INTEGER PRIMARY KEY REFERENCES public.EQUIPAVEL (id_item),
     aumento_ataque_magico INTEGER NOT NULL,
     mana_maxima INTEGER NOT NULL
 );
 -- Subclasse Item - Nao-equipavel --
 CREATE TABLE IF NOT EXISTS NEQUIPAVEL (
-    nome_nequipavel VARCHAR(100) PRIMARY KEY REFERENCES public.ITEM (nome),
+    id_item INTEGER PRIMARY KEY REFERENCES public.ITEM (id_item),
     quantidade INTEGER NOT NULL,
     tipo_nequipavel VARCHAR(100) NOT NULL CHECK (
         tipo_nequipavel in ('Comida', 'Pocao')
@@ -47,12 +48,12 @@ CREATE TABLE IF NOT EXISTS NEQUIPAVEL (
 );
 -- Subclasse N-equipavel - Comida --
 CREATE TABLE IF NOT EXISTS COMIDA (
-    nome_comida VARCHAR(100) PRIMARY KEY REFERENCES public.NEQUIPAVEL (nome_nequipavel),
+    id_item INTEGER PRIMARY KEY REFERENCES public.NEQUIPAVEL (id_item),
     aumento_vida_atual INTEGER NOT NULL,
     aumento_stamina_atual INTEGER NOT NULL
 );
 --Subclasse N-equipavel - Pocao --
 CREATE TABLE IF NOT EXISTS POCAO (
-    nome_pocao VARCHAR(100) PRIMARY KEY REFERENCES public.NEQUIPAVEL (nome_nequipavel),
+    id_item INTEGER PRIMARY KEY REFERENCES public.NEQUIPAVEL (id_item),
     aumento_mana_atual INTEGER NOT NULL
 );
