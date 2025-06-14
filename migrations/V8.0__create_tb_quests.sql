@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS INSTANCIA_QUEST (
 CREATE TABLE IF NOT EXISTS RECOMPENSA_QUEST (
     id_recompensa SERIAL PRIMARY KEY,
     id_quest INTEGER NOT NULL REFERENCES public.QUEST (id_quest),
-    item_recompensa INTEGER NOT NULL REFERENCES public.ITEM (id_item),
-    quantidade INTEGER NOT NULL DEFAULT 1,
+    item_recompensa INTEGER REFERENCES public.ITEM (id_item),
+    quantidade INTEGER NOT NULL DEFAULT 0,
     gold INTEGER NOT NULL DEFAULT 0
 );
