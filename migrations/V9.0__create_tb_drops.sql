@@ -10,4 +10,4 @@ CREATE TABLE IF NOT EXISTS DROP_NPC (
     probabilidade FLOAT NOT NULL CHECK (probabilidade BETWEEN 0 AND 1),
     gold_min INTEGER NOT NULL DEFAULT 0,
     gold_max INTEGER NOT NULL DEFAULT 0
-)
+);
