@@ -1,6 +1,5 @@
-from simple_term_menu import TerminalMenu
+from game.src.interface import Interface
 from game.src.database import criar_cursor
-from game.src.limpar_tela import limpar_tela
 from game.src.ascii_art import salas
 
 def mover_personagem(id_personagem):
@@ -14,7 +13,7 @@ def mover_personagem(id_personagem):
     sala_atual = cursor.fetchone()
 
     if not sala_atual:
-        print("❌ ERRO: Sala atual não encontrada.")
+        Interface.mostrar_erro("Sala atual não encontrada.")
         return
 
     id_sala_atual = sala_atual['id_sala']
@@ -26,39 +25,75 @@ def mover_personagem(id_personagem):
         "Oeste": sala_atual['conexao_oeste']
     }
 
+    # Busca informações detalhadas da sala atual
+    cursor.execute(f"""
+        SELECT descricao, tipo
+        FROM public.sala
+        WHERE id_sala = {id_sala_atual};
+    """)
+    info_sala = cursor.fetchone()
+
     opcoes_movimento = []
     for direcao, id_sala_conectada in conexoes.items():
         if id_sala_conectada is not None:
-            cursor.execute(f"SELECT nome FROM public.sala WHERE id_sala = {id_sala_conectada};")
+            cursor.execute(f"""
+                SELECT nome, tipo, descricao 
+                FROM public.sala 
+                WHERE id_sala = {id_sala_conectada};
+            """)
             sala_conectada = cursor.fetchone()
             if sala_conectada:
-                opcoes_movimento.append(f"{direcao} -> {sala_conectada['nome']}")
+                opcoes_movimento.append({
+                    'direcao': direcao,
+                    'nome': sala_conectada['nome'],
+                    'tipo': sala_conectada['tipo'],
+                    'descricao': sala_conectada['descricao']
+                })
 
-    opcoes_movimento.append("Voltar")
-    
-    print(salas[nome_sala_atual])
-    menu = TerminalMenu(
-        opcoes_movimento,
-        title=f"Você está localizado na: {nome_sala_atual}. Escolha para onde deseja ir:\n",
-        menu_cursor_style=("fg_green", "bold"),
-        menu_highlight_style=("fg_green", "bold"),
-        clear_screen=False
-    )
-    idx = menu.show()
+    opcoes_movimento.append({'direcao': 'Voltar', 'nome': 'Voltar ao menu anterior'})
 
-    if idx == -1 or opcoes_movimento[idx] == "Voltar":
-        print("Movimentação cancelada.")
-        return "voltar"
+    while True:
+        Interface.limpar_tela()
+        
+        # Mostra a arte ASCII da sala
+        print(Interface.CORES['titulo'] + salas[nome_sala_atual])
+        
+        # Mostra informações da sala atual
+        print(Interface.criar_titulo(f"Sala: {nome_sala_atual}"))
+        print(f"{Interface.CORES['info']}Tipo: {info_sala['tipo']}")
+        print(f"{Interface.CORES['info']}Descrição: {info_sala['descricao']}")
+        
+        # Mostra as opções de movimento
+        print(Interface.criar_titulo("Saídas Disponíveis"))
+        for i, opcao in enumerate(opcoes_movimento[:-1], 1):
+            print(f"{Interface.CORES['menu']}{i}. {opcao['direcao']} → {opcao['nome']}")
+            print(f"{Interface.CORES['info']}   Tipo: {opcao['tipo']}")
+            print(f"{Interface.CORES['info']}   {opcao['descricao']}\n")
+        
+        print(f"{Interface.CORES['menu']}{len(opcoes_movimento)}. {opcoes_movimento[-1]['nome']}")
+        print(f"\n{Interface.CORES['normal']}Escolha uma opção: ")
+        
+        try:
+            opcao = int(input()) - 1
+            if opcao not in range(len(opcoes_movimento)):
+                Interface.mostrar_erro("Opção inválida!")
+                continue
+        except ValueError:
+            Interface.mostrar_erro("Por favor, digite um número válido!")
+            continue
 
-    direcao_selecionada = opcoes_movimento[idx].split(" -> ")[0]
-    nova_sala_id = conexoes[direcao_selecionada]
+        if opcao == len(opcoes_movimento) - 1:  # Voltar
+            return "voltar"
 
-    cursor.execute(f"""
-        UPDATE public.personagem
-        SET id_sala = {nova_sala_id}
-        WHERE id_personagem = {id_personagem};
-    """)
-    cursor.connection.commit()
-    
-    print(f"✅ Você se moveu para a sala  {opcoes_movimento[idx].split(' -> ')[1]} ({direcao_selecionada}).")
-    limpar_tela()
+        direcao_selecionada = opcoes_movimento[opcao]['direcao']
+        nova_sala_id = conexoes[direcao_selecionada]
+
+        cursor.execute(f"""
+            UPDATE public.personagem
+            SET id_sala = {nova_sala_id}
+            WHERE id_personagem = {id_personagem};
+        """)
+        cursor.connection.commit()
+        
+        Interface.mostrar_sucesso(f"Você se moveu para {opcoes_movimento[opcao]['nome']} ({direcao_selecionada}).")
+        input("Pressione ENTER para continuar...")
