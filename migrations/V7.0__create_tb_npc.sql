@@ -1,15 +1,13 @@
 CREATE TABLE IF NOT EXISTS NPC (
     id_npc SERIAL PRIMARY KEY,
     especie VARCHAR(50) NOT NULL,
-    nome VARCHAR(50) UNIQUE,
+    id_sala INTEGER NOT NULL REFERENCES public.SALA (id_sala),
     tipo VARCHAR(30) NOT NULL CHECK (tipo IN ('UNICO', 'GENERICO'))
 );
 
 CREATE TABLE IF NOT EXISTS NPC_UNICO (
     id_npc INTEGER PRIMARY KEY REFERENCES public.NPC (id_npc),
-    posicao_x INTEGER NOT NULL,
-    posicao_y INTEGER NOT NULL,
-    UNIQUE (posicao_x, posicao_y),
+    nome VARCHAR(50) NOT NULL UNIQUE,
     tipo VARCHAR(20) NOT NULL CHECK (tipo in ('BOSS', 'AMIGAVEL'))
 );
 
@@ -18,10 +16,10 @@ CREATE TABLE IF NOT EXISTS NPC_BOSS (
     xp INTEGER NOT NULL,
     vida_maxima INTEGER NOT NULL DEFAULT 100,
     vida_atual INTEGER NOT NULL DEFAULT 100,
-    ataque_fisico INTEGER NOT NULL DEFAULT 0,
-    ataque_magico INTEGER NOT NULL DEFAULT 0,
-    defesa_fisica INTEGER NOT NULL DEFAULT 0,
-    defesa_magica INTEGER NOT NULL DEFAULT 0
+    ataque_fisico INTEGER NOT NULL DEFAULT 50,
+    ataque_magico INTEGER NOT NULL DEFAULT 50,
+    defesa_fisica INTEGER NOT NULL DEFAULT 300,
+    defesa_magica INTEGER NOT NULL DEFAULT 300
 );
 
 CREATE TABLE IF NOT EXISTS NPC_AMIGAVEL (
@@ -38,17 +36,14 @@ CREATE TABLE IF NOT EXISTS NPC_GENERICO (
     id_npc INTEGER PRIMARY KEY NOT NULL REFERENCES public.NPC (id_npc),
     xp INTEGER NOT NULL,
     vida_maxima INTEGER NOT NULL DEFAULT 100,
-    ataque_fisico INTEGER NOT NULL DEFAULT 0,
-    ataque_magico INTEGER NOT NULL DEFAULT 0,
-    defesa_fisica INTEGER NOT NULL DEFAULT 0,
-    defesa_magica INTEGER NOT NULL DEFAULT 0
+    ataque_fisico INTEGER NOT NULL DEFAULT 10,
+    ataque_magico INTEGER NOT NULL DEFAULT 10,
+    defesa_fisica INTEGER NOT NULL DEFAULT 10,
+    defesa_magica INTEGER NOT NULL DEFAULT 10
 );
 
 CREATE TABLE IF NOT EXISTS INSTANCIA_NPC_GENERICO (
     id_instancia SERIAL PRIMARY KEY,
     id_npc INTEGER NOT NULL REFERENCES public.NPC_GENERICO (id_npc),
-    vida_atual INTEGER NOT NULL DEFAULT 100,
-    posicao_x INTEGER NOT NULL,
-    posicao_y INTEGER NOT NULL,
-    UNIQUE (posicao_x, posicao_y)
+    vida_atual INTEGER NOT NULL DEFAULT 100
 );

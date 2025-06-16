@@ -3,6 +3,12 @@ CREATE TABLE IF NOT EXISTS PERSONAGEM (
     id_usuario INTEGER NOT NULL REFERENCES public.USUARIO (id_usuario),
     id_sala INTEGER NOT NULL DEFAULT 1 REFERENCES public.SALA (id_sala) ON DELETE SET DEFAULT,
     nome VARCHAR(50) NOT NULL,
+    faccao VARCHAR(50) CHECK (
+        faccao in (
+            'Culto das Sombras',
+            'Igreja da Luz'
+        )
+    ),
     nivel INTEGER NOT NULL DEFAULT 1,
     qtd_ouro INTEGER NOT NULL DEFAULT 0,
     exp_maxima INTEGER NOT NULL DEFAULT 100,
