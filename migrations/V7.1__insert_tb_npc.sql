@@ -144,7 +144,7 @@ INSERT INTO
         'o Gigante dos Picos Gélidos',
         (select id_sala
             from SALA
-            where nome = 'Costa Nebulosa'),
+            where nome = 'Ruínas Antigas'),
         'UNICO'
     ),
     (
@@ -229,4 +229,44 @@ INSERT INTO
         'SAel`zun',
         'BOSS'
     ),
-)
+);
+INSERT INTO 
+    public.NPC_BOSS(
+        id_npc,xp,vida_maxima,vida_atual,ataque_fisico,ataque_magico,defesa_fisica,defesa_magica
+        (
+            (select id_npc
+                from NPC
+                where especie = 'a Dama do Lamento Eterno'),
+            250,
+            15000,
+            15000,
+            10, --porcentagem?
+            70,
+            30,
+            60
+        ),
+        (
+            (select id_npc
+                from NPC
+                where especie = 'o Gigante dos Picos Gélidos'),
+            250,
+            25000,
+            25000,
+            90,
+            5,
+            80,
+            12
+        ),
+                (
+            (select id_npc
+                from NPC
+                where especie = 'o Fragmento da Realidade'),
+            500,
+            100000,
+            100000,
+            70,
+            100,
+            100,
+            100
+        )
+    );
