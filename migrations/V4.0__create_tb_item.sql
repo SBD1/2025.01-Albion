@@ -1,7 +1,7 @@
 -- Superclasse - Item --
 CREATE TABLE IF NOT EXISTS ITEM (
     id_item SERIAL PRIMARY KEY,
-    nome VARCHAR(50) NOT NULL,
+    nome VARCHAR(50) UNIQUE NOT NULL,
     descricao TEXT,
     nivel INTEGER NOT NULL,
     tipo_item VARCHAR(50) NOT NULL CHECK (
