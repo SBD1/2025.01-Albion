@@ -311,4 +311,119 @@ INSERT INTO
             where especie ='criatura lumiar'),
         'Igreja da Luz'
         ),
+    );
+INSERT INTO 
+    public.NPC_GENERICO(
+        id_npc,xp,vida_maxima,ataque_fisico,ataque_magico,defesa_fisica
+        VALUES
+        (
+            (select id_npc
+                From NPC
+                where especie ='yeti-pé-pequeno'),
+                100,
+                25,
+                25,
+                25,
+                25
+        ),
+        (
+            (select id_npc
+                From NPC
+                where especie ='antigo_explorador'),
+                100,
+                25,
+                25,
+                25,
+                25
+        ),
+        (
+            (select id_npc
+                From NPC
+                where especie ='aranha-esmaga-ossos'),
+                100,
+                25,
+                25,
+                25,
+                25
+        ),
+        (
+            (select id_npc
+                From NPC
+                where especie ='múmias-troca-peles'),
+                100,
+                25,
+                25,
+                25,
+                25
+        ),
+        (
+            (select id_npc
+                From NPC
+                where especie ='blob-a-geleia'),
+                100,
+                25,
+                25,
+                25,
+                25
+        ),
+        (
+            (select id_npc
+                From NPC
+                where especie ='Coruja-das-Geadas'),
+                100,
+                25,
+                25,
+                25,
+                25
+        ),
+        (
+            (select id_npc
+                From NPC
+                where especie ='pixies'),
+                100,
+                25,
+                25,
+                25,
+                25
+        ),
+        (
+            (select id_npc
+                From NPC
+                where especie ='espiritos-esquecidos'),
+                100,
+                25,
+                25,
+                25,
+                25
+        ),
+        (
+            (select id_npc
+                From NPC
+                where especie ='serpes-flamejantes'),
+                100,
+                25,
+                25,
+                25,
+                25
+        ),
+        (
+            (select id_npc
+                From NPC
+                where especie ='sereias'),
+                100,
+                25,
+                25,
+                25,
+                25
+        ),
+        (
+            (select id_npc
+                From NPC
+                where especie ='Nimbragos'),
+                100,
+                25,
+                25,
+                25,
+                25
+        )
     )
