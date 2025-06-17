@@ -23,26 +23,25 @@ INSERT INTO QUEST (id_npc, objetivo, nivel_minimo) VALUES
 
 (10, 'A arquimaga da cidade está realizando um ritual para fortalecer as barreiras mágicas que protegem a cidade. Ela precisa de ajuda para coletar energia mágica pura de diferentes fontes elementais. A missão leva os aventureiros através de planos elementais e requer conhecimento arcano.', 25);
 
--- Insert quest instances for characters
-INSERT INTO INSTANCIA_QUEST (id_quest, id_personagem, quest_status) VALUES
--- Personagem 1 (Aventureiro iniciante)
-(3, 1, FALSE),  -- Quest do pescador (não iniciada)
-(4, 1, TRUE),   -- Quest da curandeira (completa)
-
--- Personagem 2 (Guerreiro experiente)
-(1, 2, TRUE),   -- Quest do Orynth (completa)
-(5, 2, FALSE),  -- Quest do ferreiro (não iniciada)
-(9, 2, TRUE),   -- Quest do líder dos mercadores (completa)
-
--- Personagem 3 (Mago iniciante)
-(4, 3, FALSE),  -- Quest da curandeira (não iniciada)
-(7, 3, TRUE),   -- Quest da bibliotecária (completa)
-
--- Personagem 4 (Clérigo de alto nível)
-(2, 4, TRUE),   -- Quest do Tho Mek (completa)
-(8, 4, FALSE),  -- Quest do alquimista (não iniciada)
-(10, 4, TRUE),  -- Quest da arquimaga (completa)
-
--- Personagem 5 (Ladino)
-(6, 5, TRUE),   -- Quest do guarda (completa)
-(9, 5, FALSE);  -- Quest do líder dos mercadores (não iniciada) 
+-- Função para criar instância de quest
+CREATE OR REPLACE FUNCTION criar_instancia_quest(
+    p_id_quest INTEGER,
+    p_id_personagem INTEGER
+) RETURNS VOID AS $$
+BEGIN
+    -- Verifica se o personagem tem nível suficiente
+    IF EXISTS (
+        SELECT 1 
+        FROM QUEST q 
+        JOIN PERSONAGEM p ON p.nivel >= q.nivel_minimo
+        WHERE q.id_quest = p_id_quest 
+        AND p.id_personagem = p_id_personagem
+    ) THEN
+        -- Cria a instância da quest
+        INSERT INTO INSTANCIA_QUEST (id_quest, id_personagem, quest_status)
+        VALUES (p_id_quest, p_id_personagem, FALSE);
+    ELSE
+        RAISE EXCEPTION 'Personagem não tem nível suficiente para esta quest';
+    END IF;
+END;
+$$ LANGUAGE plpgsql; 
