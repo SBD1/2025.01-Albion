@@ -1,4 +1,4 @@
-REATE OR REPLACE FUNCTION f_deleta_usuario(
+CREATE OR REPLACE FUNCTION f_deleta_usuario(
     p_username VARCHAR
 )
 RETURNS VOID AS $$
