@@ -115,7 +115,7 @@ $$ LANGUAGE plpgsql;
 
 -- ITEM
 
-CREATE OR REPLACE FUNCTION fn_info_item_por_id(p_id_item INTEGER)
+CREATE OR REPLACE FUNCTION f_info_item_por_id(p_id_item INTEGER)
 RETURNS TABLE (
     id_item INTEGER,
     nome VARCHAR,
