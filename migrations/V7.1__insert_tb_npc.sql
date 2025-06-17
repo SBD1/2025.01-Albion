@@ -233,6 +233,7 @@ INSERT INTO
 INSERT INTO 
     public.NPC_BOSS(
         id_npc,xp,vida_maxima,vida_atual,ataque_fisico,ataque_magico,defesa_fisica,defesa_magica
+        VALUES
         (
             (select id_npc
                 from NPC
@@ -270,3 +271,44 @@ INSERT INTO
             100
         )
     );
+INSERT INTO
+    public.NPC_AMIGAVEL(
+        id_npc,faccao
+        VALUES
+        ((select id_npc
+            from NPC
+            where especie ='humanoide'),
+        'Culto das Sombras'
+        ),
+        ((select id_npc
+            from NPC
+            where especie ='espiritualista'),
+        'Igreja da Luz'
+        ),
+        ((select id_npc
+            from NPC
+            where especie ='elfa'),
+        'Igreja da Luz'
+        ),
+        ((select id_npc
+            from NPC
+            where especie ='humano'),
+        'Igreja da Luz'
+        ),   
+        ((select id_npc
+            from NPC
+            where especie ='vampiro'),
+        'Culto das Sombras'
+        ),
+        ((select id_npc
+            from NPC
+            where especie ='meio zoiudo meio vampiro'),
+        'Culto das Sombras'
+        ),
+        
+                ((select id_npc
+            from NPC
+            where especie ='criatura lumiar'),
+        'Igreja da Luz'
+        ),
+    )
