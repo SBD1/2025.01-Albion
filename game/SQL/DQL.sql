@@ -30,7 +30,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 -- SALA
 
 CREATE OR REPLACE FUNCTION f_get_sala_por_id(p_id_sala INTEGER)
@@ -204,5 +203,32 @@ BEGIN
     JOIN public.sala s ON p.id_sala = s.id_sala
     WHERE p.id_usuario = p_id_usuario
     ORDER BY p.nivel;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION f_consulta_inventario(p_id_personagem INTEGER)
+RETURNS TABLE (
+    id_instancia INTEGER,
+    nome_item VARCHAR,
+    descricao TEXT,
+    quantidade INTEGER
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        ii.id_instancia,
+        i.nome AS nome_item,
+        i.descricao,
+        ii.quantidade
+    FROM 
+        public.INVENTARIO_ITENS inv
+    JOIN 
+        public.INSTANCIA_ITEM ii ON inv.id_instancia = ii.id_instancia
+    JOIN 
+        public.ITEM i ON ii.id_item = i.id_item
+    WHERE 
+        inv.id_personagem = p_id_personagem
+    ORDER BY 
+        i.nome;
 END;
 $$ LANGUAGE plpgsql;
