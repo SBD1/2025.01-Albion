@@ -21,4 +21,28 @@ INSERT INTO QUEST (id_npc, objetivo, nivel_minimo) VALUES
 
 (9, 'O líder dos mercadores está preocupado com o aumento de ataques nas rotas comerciais. Ele precisa de guarda-costas para proteger as caravanas e investigar a origem dos ataques. A missão requer força e diplomacia para lidar com bandidos e negociar com tribos nômades.', 18),
 
-(10, 'A arquimaga da cidade está realizando um ritual para fortalecer as barreiras mágicas que protegem a cidade. Ela precisa de ajuda para coletar energia mágica pura de diferentes fontes elementais. A missão leva os aventureiros através de planos elementais e requer conhecimento arcano.', 25); 
+(10, 'A arquimaga da cidade está realizando um ritual para fortalecer as barreiras mágicas que protegem a cidade. Ela precisa de ajuda para coletar energia mágica pura de diferentes fontes elementais. A missão leva os aventureiros através de planos elementais e requer conhecimento arcano.', 25);
+
+-- Insert quest instances for characters
+INSERT INTO INSTANCIA_QUEST (id_quest, id_personagem, quest_status) VALUES
+-- Personagem 1 (Aventureiro iniciante)
+(3, 1, FALSE),  -- Quest do pescador (não iniciada)
+(4, 1, TRUE),   -- Quest da curandeira (completa)
+
+-- Personagem 2 (Guerreiro experiente)
+(1, 2, TRUE),   -- Quest do Orynth (completa)
+(5, 2, FALSE),  -- Quest do ferreiro (não iniciada)
+(9, 2, TRUE),   -- Quest do líder dos mercadores (completa)
+
+-- Personagem 3 (Mago iniciante)
+(4, 3, FALSE),  -- Quest da curandeira (não iniciada)
+(7, 3, TRUE),   -- Quest da bibliotecária (completa)
+
+-- Personagem 4 (Clérigo de alto nível)
+(2, 4, TRUE),   -- Quest do Tho Mek (completa)
+(8, 4, FALSE),  -- Quest do alquimista (não iniciada)
+(10, 4, TRUE),  -- Quest da arquimaga (completa)
+
+-- Personagem 5 (Ladino)
+(6, 5, TRUE),   -- Quest do guarda (completa)
+(9, 5, FALSE);  -- Quest do líder dos mercadores (não iniciada) 
