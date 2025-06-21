@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS QUEST (
     id_quest SERIAL PRIMARY KEY,
     id_npc INTEGER NOT NULL REFERENCES public.NPC_AMIGAVEL (id_npc),
-    objetivo VARCHAR(250) NOT NULL,
+    objetivo VARCHAR(500) NOT NULL,
     nivel_minimo INTEGER NOT NULL DEFAULT 1
 );
 
