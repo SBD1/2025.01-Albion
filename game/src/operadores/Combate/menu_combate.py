@@ -207,6 +207,10 @@ def iniciar_combate(id_personagem, id_sala):
                 # Outras ações mantêm turno do jogador, adiconar depois
                 continue
 
+        # Verificação: se o monstro morreu após o turno do personagem, termina o combate antes do ataque do monstro
+        if vida_atual_monstro <= 0:
+            break
+        
         # Ataque do monstro com cálculo percentual de dano
         dmg_fisico = calcular_dano_fisico(ataque_fisico_monstro, defesa_fisica_personagem)
         dmg_magico = calcular_dano_fisico(ataque_magico_monstro, defesa_magica_personagem)
@@ -273,6 +277,15 @@ def iniciar_combate(id_personagem, id_sala):
         cursor.execute(
             "UPDATE public.personagem SET vida_atual = %s WHERE id_personagem = %s;",
             (vida_maxima_personagem, id_personagem)
+        )
+        cursor.execute(
+            "UPDATE public.personagem SET stamina_atual = %s WHERE id_personagem = %s;",
+            (stamina_maxima_personagem, id_personagem)
+        )
+        # Restaura mana do espiritualista ao máximo
+        cursor.execute(
+            "UPDATE public.espiritualista SET mana_atual = mana_total WHERE id_personagem = %s;",
+            (id_personagem,)
         )
         cursor.connection.commit()
         print(f"Você perdeu {perda_xp} pontos de EXP.")
