@@ -116,3 +116,22 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql;
+
+-- Função para criar instância de NPC genérico e retornar id_instancia
+CREATE OR REPLACE FUNCTION f_cria_instancia_npc_generico(
+    p_id_npc INTEGER
+) RETURNS INTEGER AS $$
+DECLARE
+    new_id INTEGER;
+    vida_max INTEGER;
+BEGIN
+    SELECT vida_maxima INTO vida_max
+    FROM public.NPC_GENERICO
+    WHERE id_npc = p_id_npc;
+
+    INSERT INTO public.INSTANCIA_NPC_GENERICO(id_npc, vida_atual)
+    VALUES (p_id_npc, COALESCE(vida_max, 100))
+    RETURNING id_instancia INTO new_id;
+    RETURN new_id;
+END;
+$$ LANGUAGE plpgsql;

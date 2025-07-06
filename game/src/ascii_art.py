@@ -143,7 +143,7 @@ import random
 
 def gerar_grid_personalizado_com_saidas(tamanho_vertical, tamanho_horizontal, elemento_blocante, elemento_blocante2, conexoes):
     grid = [[" " for _ in range(tamanho_horizontal)] for _ in range(tamanho_vertical)]
-    max_montros=5
+    max_montros=15
 
     # Adicionar bordas
     for i in range(tamanho_vertical):
