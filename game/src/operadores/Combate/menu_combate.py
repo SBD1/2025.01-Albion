@@ -1,7 +1,9 @@
 from game.src.database import criar_cursor
 from simple_term_menu import TerminalMenu
 from game.src.limpar_tela import limpar_tela
-from game.src.operadores.Combate.menu_ataque import logica_atacar
+from game.src.operadores.Combate.menu_ataque import logica_atacar, calcular_dano_fisico
+from game.src.operadores.Combate.menu_magia import menu_magia
+from game.src.operadores.drops.menu_drop import checar_drops
 
 import time
 
@@ -162,7 +164,7 @@ def iniciar_combate(id_personagem, id_sala):
             if id_especie == 1:
                 opcoes.append("Atacar com fantasma")
             elif id_especie == 2:
-                opcoes.append("Usar habilidade")
+                opcoes.append("Usar Magia")
             elif id_especie == 3:
                 opcoes.append("Usar transformação")
             
@@ -187,13 +189,15 @@ def iniciar_combate(id_personagem, id_sala):
                 )
                 turno = 'monstro'
 
+            elif acao == "Usar Magia":
+                usar_magia()
             else:
                 # Outras ações mantêm turno do jogador, adiconar depois
                 continue
 
-        # Ataque do monstro
-        dmg_fisico = max(0, ataque_fisico_monstro - defesa_fisica_personagem)
-        dmg_magico = max(0, ataque_magico_monstro - defesa_magica_personagem)
+        # Ataque do monstro com cálculo percentual de dano
+        dmg_fisico = calcular_dano_fisico(ataque_fisico_monstro, defesa_fisica_personagem)
+        dmg_magico = calcular_dano_fisico(ataque_magico_monstro, defesa_magica_personagem)
         dano_monstro = dmg_fisico + dmg_magico
         vida_atual_personagem = max(0, vida_atual_personagem - dano_monstro)
         criar_cursor().execute(
@@ -212,9 +216,29 @@ def iniciar_combate(id_personagem, id_sala):
         
         continue
 
+    # Verifica se o monstro foi derrotado
+    if vida_atual_monstro <= 0:
+        limpar_tela()
+        print(f"Você derrotou o monstro! Ganhou {npc_gen['xp']} de xp")
+        time.sleep(1.5)
+        xp_monstro = npc_gen['xp']
+        xp_atual = personagem['exp_atual']
+        novo_xp = xp_atual + xp_monstro
+        cursor = criar_cursor()
+        cursor.execute(
+            "UPDATE public.personagem SET exp_atual = %s WHERE id_personagem = %s;",
+            (novo_xp, id_personagem)
+        )
+        cursor.connection.commit()
+        print(f"Você ganhou {xp_monstro} pontos de EXP.")
+        time.sleep(1.5)
+
+        # Checa drops
+        #checar_drops(id_instancia)
+        time.sleep(1.5)
+
     # Verifica se o personagem morreu
     if vida_atual_personagem <= 0:
-        # Personagem morreu: penalidades e teleporte para praça central
         limpar_tela()
         print("Você foi derrotado pelo monstro e morreu!")
         time.sleep(1.5)
