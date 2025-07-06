@@ -3,7 +3,7 @@ from simple_term_menu import TerminalMenu
 from game.src.limpar_tela import limpar_tela
 from game.src.operadores.Combate.menu_ataque import logica_atacar, calcular_dano_fisico
 from game.src.operadores.Combate.menu_magia import menu_magia
-from game.src.operadores.drops.menu_drop import checar_drops
+# from game.src.operadores.drops.menu_drop import checar_drops
 
 import time
 
