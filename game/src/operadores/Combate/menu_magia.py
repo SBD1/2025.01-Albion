@@ -41,7 +41,7 @@ def obter_magias_disponiveis(nivel_personagem):
     try:
         query = """
         SELECT id_magia, nome, descricao, nivel_requerido, custo_mana, dano_base, cura_base
-        FROM MAGIA
+        FROM public.MAGIA
         WHERE nivel_requerido <= %s
         ORDER BY nivel_requerido ASC, nome ASC
         """
@@ -70,13 +70,41 @@ def usar_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_mo
     mana_total = info_espiritualista['mana_total']
     ataque_magico = info_espiritualista['ataque_magico']
     
+    # DEBUG: Vamos verificar o que está acontecendo
+    print(f"DEBUG: Nível do personagem: {nivel}")
+    print(f"DEBUG: Nome do personagem: {nome}")
+    
     # Obtém magias disponíveis
     magias_disponiveis = obter_magias_disponiveis(nivel)
+    
+    # DEBUG: Verificar magias retornadas
+    print(f"DEBUG: Magias encontradas: {len(magias_disponiveis)}")
+    for magia in magias_disponiveis:
+        print(f"DEBUG: - {magia['nome']} (Nível {magia['nivel_requerido']})")
     
     if not magias_disponiveis:
         limpar_tela()
         print("Nenhuma magia disponível para o seu nível atual.")
-        time.sleep(2)
+        print(f"Seu nível atual: {nivel}")
+        
+        # Vamos verificar se existem magias no banco
+        cursor = criar_cursor()
+        try:
+            cursor.execute("SELECT COUNT(*) as total FROM MAGIA")
+            total_magias = cursor.fetchone()['total']
+            print(f"Total de magias no banco: {total_magias}")
+            
+            cursor.execute("SELECT nome, nivel_requerido FROM MAGIA ORDER BY nivel_requerido")
+            todas_magias = cursor.fetchall()
+            print("Todas as magias no banco:")
+            for magia in todas_magias:
+                print(f"- {magia['nome']} (Nível {magia['nivel_requerido']})")
+            cursor.connection.close()
+        except Exception as e:
+            print(f"Erro ao verificar magias no banco: {e}")
+            cursor.connection.close()
+        
+        input("Pressione Enter para continuar...")
         return None, None
     
     while True:
