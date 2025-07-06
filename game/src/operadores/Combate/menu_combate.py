@@ -190,7 +190,19 @@ def iniciar_combate(id_personagem, id_sala):
                 turno = 'monstro'
 
             elif acao == "Usar Magia":
-                usar_magia()
+                resultado = menu_magia(
+                    id_personagem, 
+                    id_instancia, 
+                    defesa_magica_monstro, 
+                    vida_atual_monstro
+                )
+                if resultado and resultado[0] is not None and resultado[1] is not None:
+                    # Atualiza mana e vida do monstro
+                    vida_atual_monstro = resultado[1]
+                    turno = 'monstro'
+                else:
+                    # Se não conjurou magia, mantém turno do jogador
+                    continue
             else:
                 # Outras ações mantêm turno do jogador, adiconar depois
                 continue
