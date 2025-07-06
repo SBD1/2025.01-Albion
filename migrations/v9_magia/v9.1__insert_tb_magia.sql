@@ -24,7 +24,7 @@ VALUES (
         40,
         0
     ),
- (
+    (
         'Cura Espiritual',
         'Canaliza energia vital positiva para restaurar pontos de vida.',
         5,
@@ -32,7 +32,6 @@ VALUES (
         0,
         50
     ),
-
     (
         'Apocalipse Cósmico',
         'Invoca uma explosão massiva de energia espiritual que devasta a área ao redor.',
