@@ -6,6 +6,7 @@ RETURNS INTEGER AS $$
 
 DECLARE
     v_id_personagem INTEGER;
+    v_id_fantasma   INTEGER;
 
 BEGIN
     INSERT INTO public.personagem(id_usuario, nome)
@@ -13,7 +14,11 @@ BEGIN
     RETURNING id_personagem INTO v_id_personagem;
 
     IF p_especie_personagem = 'Zoiudo' THEN
-        INSERT INTO public.ZOIUDO(id_personagem) VALUES (v_id_personagem);
+        -- Cria fantasma associado e vincula ao personagem Zoiúdo
+        INSERT INTO public.fantasma DEFAULT VALUES
+        RETURNING id_fantasma INTO v_id_fantasma;
+        INSERT INTO public.ZOIUDO(id_personagem, id_fantasma)
+        VALUES (v_id_personagem, v_id_fantasma);
     ELSIF p_especie_personagem = 'Draconico' THEN
         INSERT INTO public.DRACONICO(id_personagem) VALUES (v_id_personagem);
     ELSIF p_especie_personagem = 'Espiritualista' THEN

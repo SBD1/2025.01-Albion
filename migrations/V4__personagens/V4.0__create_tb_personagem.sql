@@ -29,8 +29,10 @@ CREATE TABLE IF NOT EXISTS FANTASMA (
     nivel INTEGER NOT NULL DEFAULT 1,
     exp_maxima INTEGER NOT NULL DEFAULT 100,
     exp_atual INTEGER NOT NULL DEFAULT 0,
+    vida_maxima INTEGER NOT NULL DEFAULT 100,
+    vida_atual INTEGER NOT NULL DEFAULT 100,
     ataque_fisico INTEGER NOT NULL DEFAULT 1,
-    ataque_magico INTEGER DEFAULT 10 NOT NULL,
+    ataque_magico INTEGER DEFAULT 50 NOT NULL,
     defesa_fisica INTEGER NOT NULL DEFAULT 10,
     defesa_magica INTEGER NOT NULL DEFAULT 10
 );
@@ -58,8 +60,9 @@ CREATE TABLE IF NOT EXISTS DRACONICO (
     turnos_maximo_dragao INTEGER DEFAULT 3 NOT NULL,
     turnos_recarga INTEGER DEFAULT 5 NOT NULL,
     custo_stamina INTEGER DEFAULT 50 NOT NULL,
-    aumento_vida_atual INTEGER DEFAULT 20 NOT NULL,
-    aumento_ataque_fisico INTEGER DEFAULT 20 NOT NULL,
+    aumento_vida_atual INTEGER DEFAULT 10 NOT NULL,
+    aumento_ataque_fisico INTEGER DEFAULT 10 NOT NULL,
+    turnos_restantes INTEGER DEFAULT 0 NOT NULL,
     UNIQUE (id_personagem)
 );
 

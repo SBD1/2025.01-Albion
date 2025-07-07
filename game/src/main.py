@@ -1,7 +1,7 @@
 from game.src.operadores.Usuario.menu_usuario import menu_usuario
 from game.src.operadores.Personagem.menu_personagens import menu_personagens
 from game.src.operadores.Personagem.selecionar_personagem import selecionar_personagem
-from game.src.operadores.Personagem.mover_personagem import mover_personagem
+from game.src.operadores.Personagem.grid_movimentacao import iniciar_grid
 from game.src.operadores.Personagem.menu_acoes import menu_acoes
 from game.src.operadores.Inventario.abrir_inventario import abrir_inventario
 
@@ -29,7 +29,7 @@ def main():
 
                 if acao == "mover":
                     while True:
-                        result_movimento = mover_personagem(id_personagem)
+                        result_movimento = iniciar_grid(id_personagem)
 
                         if result_movimento == "voltar":
                             break

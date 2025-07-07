@@ -138,36 +138,81 @@ salas_conexoes = {
     "Floresta do Leste": floresta_do_leste,
     "Ruínas Antigas": ruinas_antigas,
 }
-#def montar_mapa(x,y):
-#    molde_15x15 = []
-#    for i in range(11):
-#        molde_15x15.append("\n")
-#        molde_15x15.append("║")
-#        temp = []
-#        for j in range(25):
-#            if i == 0 or i == 10:
-#                molde_15x15.append("═")
-#            else:
-#                molde_15x15.append(" ")
-#        molde_15x15.append("║")
-#
-#    molde_15x15[14] = "⬆️"
-#    molde_15x15[6*19] = "→"
-#    molde_15x15[185] = "➡️"
-#    molde_15x15[294] = "⬇️"
-#    molde_15x15[x*y] = "♥"
-#    mapa = "".join(molde_15x15)
-#    
-#    print(mapa)
-    
-#def conexoes_salas(norte,oeste,sul,leste):
-#    if norte == True:
-#        molde_15x15[5] = "↑"
-#    if oeste == True:
-#        molde_15x15[5*17] = "→"
-#    if sul == True:
-#        molde_15x15[17*9] = "→"
-#
-#    if leste == True:
 
-#montar_mapa(5,20)
+import random
+
+def gerar_grid_personalizado_com_saidas(tamanho_vertical, tamanho_horizontal, elemento_blocante, elemento_blocante2, conexoes):
+    grid = [[" " for _ in range(tamanho_horizontal)] for _ in range(tamanho_vertical)]
+    max_montros=15
+
+    # Adicionar bordas
+    for i in range(tamanho_vertical):
+        grid[i][0] = elemento_blocante2
+        grid[i][tamanho_horizontal - 1] = elemento_blocante2
+    for j in range(tamanho_horizontal):
+        grid[0][j] = elemento_blocante2
+        grid[tamanho_vertical - 1][j] = elemento_blocante2
+
+    # Adicionar saídas com base nas conexões
+    saidas = []
+    if conexoes.get("norte"):
+        grid[0][tamanho_horizontal // 2] = " "
+        saidas.append((0, tamanho_horizontal // 2))
+    if conexoes.get("sul"):
+        grid[tamanho_vertical - 1][tamanho_horizontal // 2] = " "
+        saidas.append((tamanho_vertical - 1, tamanho_horizontal // 2))
+    if conexoes.get("leste"):
+        grid[tamanho_vertical // 2][tamanho_horizontal - 1] = " "
+        saidas.append((tamanho_vertical // 2, tamanho_horizontal - 1))
+    if conexoes.get("oeste"):
+        grid[tamanho_vertical // 2][0] = " "
+        saidas.append((tamanho_vertical // 2, 0))
+
+    # Distribuir elementos blocantes aleatoriamente
+    for _ in range((tamanho_vertical * tamanho_horizontal) // 15):
+        while True:
+            x = random.randint(2, tamanho_vertical - 3)
+            y = random.randint(2, tamanho_horizontal - 3)
+            if (x, y) not in saidas and grid[x][y] == " ":
+                grid[x][y] = elemento_blocante
+                break
+
+    # Distribuir monstros aleatoriamente, evitando elementos blocantes e saídas
+    monstros = []
+    for _ in range(max_montros):
+        while True:
+            x, y = random.randint(2, tamanho_vertical - 2), random.randint(2, tamanho_horizontal - 2)
+            if (x, y) not in saidas and grid[x][y] == " ":
+                monstros.append((x, y))
+                break
+
+    return grid, monstros
+
+
+grids = {
+    "Praça Central": [
+"######################### ########################",
+"#  ██████████                        ██████████  #",
+"#  █        █                        █        █  #",
+"#  █                                          █  #",
+"#  █        █                        █        █  #",
+"#  ██████████                        ██████████  #",
+"#                                                #",
+"                                                  ",
+"#                                                #",
+"#  ██████████                        ██████████  #",
+"#  █        █                        █        █  #",
+"#  █                                          █  #",
+"#  █        █                        █        █  #",
+"#  ██████████                        ██████████  #",
+"######################### ########################"],
+
+    "Campos Congelados": gerar_grid_personalizado_com_saidas(15, 50, "🧊","❄️", {"norte": True, "sul": True, "leste": True, "oeste": False}),
+    "Caverna Sombria": gerar_grid_personalizado_com_saidas(15, 50, "🪨","🕳️", {"norte": True, "sul": True, "leste": False, "oeste": True}),
+    "Deserto Escaldante": gerar_grid_personalizado_com_saidas(15, 50,"🟤","🔥", {"norte": False, "sul": True, "leste": True, "oeste": True}),
+    "Floresta do Leste": gerar_grid_personalizado_com_saidas(15, 50,"🌳","🌲", {"norte": False, "sul": False, "leste": False, "oeste": True}),
+    "Montanha Nevada": gerar_grid_personalizado_com_saidas(15, 50, "❄️", "⛰️", {"norte": False, "sul": True, "leste": False, "oeste": False}),
+    "Pântano Sombrio": gerar_grid_personalizado_com_saidas(15, 50,"🍄","🟢", {"norte": False, "sul": False, "leste": True, "oeste": False}),
+    "Ruínas Antigas": gerar_grid_personalizado_com_saidas(15, 50,"🪨", "🏛️", {"norte": True, "sul": False, "leste": False, "oeste": True})
+}
+

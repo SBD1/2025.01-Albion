@@ -1,5 +1,3 @@
-
-
 -- Tabela Personagem
 CREATE OR REPLACE FUNCTION f_atualiza_nome_personagem(
     p_id_personagem INTEGER,
@@ -13,7 +11,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE FUNCTION f_atualiza_faccao_personagem(
     p_id_personagem INTEGER,
     p_nova_faccao VARCHAR
@@ -25,7 +22,6 @@ BEGIN
     WHERE id_personagem = p_id_personagem;
 END;
 $$ LANGUAGE plpgsql;
-
 
 CREATE OR REPLACE FUNCTION f_atualiza_nivel_personagem(
     p_id_personagem INTEGER,
@@ -39,7 +35,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE FUNCTION f_atualiza_ouro_personagem(
     p_id_personagem INTEGER,
     p_novo_ouro INTEGER
@@ -51,7 +46,6 @@ BEGIN
     WHERE id_personagem = p_id_personagem;
 END;
 $$ LANGUAGE plpgsql;
-
 
 CREATE OR REPLACE FUNCTION f_atualiza_exp_maxima_personagem(
     p_id_personagem INTEGER,
@@ -65,7 +59,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE FUNCTION f_atualiza_exp_atual_personagem(
     p_id_personagem INTEGER,
     p_nova_exp_atual INTEGER
@@ -77,7 +70,6 @@ BEGIN
     WHERE id_personagem = p_id_personagem;
 END;
 $$ LANGUAGE plpgsql;
-
 
 CREATE OR REPLACE FUNCTION f_atualiza_vida_atual_personagem(
     p_id_personagem INTEGER,
@@ -91,7 +83,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE FUNCTION f_atualiza_vida_maxima_personagem(
     p_id_personagem INTEGER,
     p_nova_vida_maxima INTEGER
@@ -103,7 +94,6 @@ BEGIN
     WHERE id_personagem = p_id_personagem;
 END;
 $$ LANGUAGE plpgsql;
-
 
 CREATE OR REPLACE FUNCTION f_atualiza_stamina_atual_personagem(
     p_id_personagem INTEGER,
@@ -117,7 +107,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE FUNCTION f_atualiza_stamina_maxima_personagem(
     p_id_personagem INTEGER,
     p_nova_stamina_maxima INTEGER
@@ -129,7 +118,6 @@ BEGIN
     WHERE id_personagem = p_id_personagem;
 END;
 $$ LANGUAGE plpgsql;
-
 
 CREATE OR REPLACE FUNCTION f_atualiza_ataque_fisico_personagem(
     p_id_personagem INTEGER,
@@ -143,7 +131,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE FUNCTION f_atualiza_defesa_fisica_personagem(
     p_id_personagem INTEGER,
     p_nova_defesa_fisica INTEGER
@@ -156,7 +143,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE FUNCTION f_atualiza_defesa_magica_personagem(
     p_id_personagem INTEGER,
     p_nova_defesa_magica INTEGER
@@ -165,3 +151,18 @@ RETURNS VOID AS $$
 BEGIN
     UPDATE public.personagem
     SET defesa_magica = p_nova_defesa_magica
+    WHERE id_personagem = p_id_personagem;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION f_atualiza_sala_personagem(
+    p_id_personagem INTEGER,
+    p_nova_sala INTEGER
+)
+RETURNS VOID AS $$
+BEGIN
+    UPDATE public.personagem
+    SET id_sala = p_nova_sala
+    WHERE id_personagem = p_id_personagem;
+END;
+$$ LANGUAGE plpgsql;
