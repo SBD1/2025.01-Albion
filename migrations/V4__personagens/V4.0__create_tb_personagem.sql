@@ -58,8 +58,9 @@ CREATE TABLE IF NOT EXISTS DRACONICO (
     turnos_maximo_dragao INTEGER DEFAULT 3 NOT NULL,
     turnos_recarga INTEGER DEFAULT 5 NOT NULL,
     custo_stamina INTEGER DEFAULT 50 NOT NULL,
-    aumento_vida_atual INTEGER DEFAULT 20 NOT NULL,
-    aumento_ataque_fisico INTEGER DEFAULT 20 NOT NULL,
+    aumento_vida_atual INTEGER DEFAULT 10 NOT NULL,
+    aumento_ataque_fisico INTEGER DEFAULT 10 NOT NULL,
+    turnos_restantes INTEGER DEFAULT 0 NOT NULL,
     UNIQUE (id_personagem)
 );
 
