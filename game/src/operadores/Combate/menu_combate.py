@@ -3,6 +3,7 @@ from simple_term_menu import TerminalMenu
 from game.src.limpar_tela import limpar_tela
 from game.src.operadores.Combate.menu_ataque import logica_atacar, calcular_dano_fisico
 from game.src.operadores.Combate.menu_magia import menu_magia
+from game.src.operadores.Combate.menu_transformacao import menu_transformacao_draconico
 # from game.src.operadores.drops.menu_drop import checar_drops
 
 import time
@@ -122,6 +123,15 @@ def iniciar_combate(id_personagem, id_sala):
         return
     cursor.connection.close()
     
+    # Resetar transformação dracônica ao iniciar combate
+    cursor_reset = criar_cursor()
+    cursor_reset.execute(
+        "UPDATE DRACONICO SET turnos_restantes = 0 WHERE id_personagem = %s;",
+        (id_personagem,)
+    )
+    cursor_reset.connection.commit()
+    cursor_reset.connection.close()
+    
     # Inicializa variáveis de combate
     monstro = checar_instancia(id_instancia)
     if not monstro:
@@ -202,6 +212,12 @@ def iniciar_combate(id_personagem, id_sala):
                     turno = 'monstro'
                 else:
                     # Se não conjurou magia, mantém turno do jogador
+                    continue
+            elif acao == "Usar transformação":
+                resultado = menu_transformacao_draconico(id_personagem)
+                if resultado:
+                    turno = 'monstro'
+                else:
                     continue
             else:
                 # Outras ações mantêm turno do jogador, adiconar depois
