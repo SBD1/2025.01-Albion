@@ -3,6 +3,8 @@ from simple_term_menu import TerminalMenu
 from game.src.limpar_tela import limpar_tela
 from game.src.operadores.Combate.menu_ataque import logica_atacar, calcular_dano_fisico
 from game.src.operadores.Combate.menu_magia import menu_magia
+from game.src.operadores.Combate.menu_fantasma import usar_fantasma
+from game.src.operadores.Combate.xp import aplicar_xp
 # from game.src.operadores.drops.menu_drop import checar_drops
 
 import time
@@ -132,6 +134,14 @@ def iniciar_combate(id_personagem, id_sala):
     ataque_magico_monstro = npc_gen['ataque_magico']
     defesa_fisica_monstro = npc_gen['defesa_fisica']
     defesa_magica_monstro = npc_gen['defesa_magica']
+    monstro_stats = {
+        'vida_atual': vida_atual_monstro,
+        'vida_maxima': vida_maxima_monstro,
+        'ataque_fisico': ataque_fisico_monstro,
+        'ataque_magico': ataque_magico_monstro,
+        'defesa_fisica': defesa_fisica_monstro,
+        'defesa_magica': defesa_magica_monstro
+    }
 
     personagem = checar_personagem(id_personagem)
     if not personagem:
@@ -148,6 +158,7 @@ def iniciar_combate(id_personagem, id_sala):
     # Loop de combate com turnos alternados
     turno = 'personagem'
     while vida_atual_monstro > 0 and vida_atual_personagem > 0:
+        print("=== Seu turno de Ação ===")
         limpar_tela()
         print("=== Status do Monstro ===")
         print(f"Espécie: {npc['especie']} | Vida: {vida_atual_monstro}/{vida_maxima_monstro}")
@@ -162,7 +173,7 @@ def iniciar_combate(id_personagem, id_sala):
             # Menu Combate
             opcoes = ["Atacar"]
             if id_especie == 1:
-                opcoes.append("Atacar com fantasma")
+                opcoes.append("Invocar Fantasma para Combate")
             elif id_especie == 2:
                 opcoes.append("Usar Magia")
             elif id_especie == 3:
@@ -191,73 +202,82 @@ def iniciar_combate(id_personagem, id_sala):
 
             elif acao == "Usar Magia":
                 resultado = menu_magia(
-                    id_personagem, 
-                    id_instancia, 
-                    defesa_magica_monstro, 
-                    vida_atual_monstro
+                    id_personagem,
+                    id_instancia,
+                    monstro_stats
                 )
                 if resultado and resultado[0] is not None and resultado[1] is not None:
-                    # Atualiza mana e vida do monstro
                     vida_atual_monstro = resultado[1]
                     turno = 'monstro'
                 else:
-                    # Se não conjurou magia, mantém turno do jogador
                     continue
-            else:
-                # Outras ações mantêm turno do jogador, adiconar depois
-                continue
 
-        # Verificação: se o monstro morreu após o turno do personagem, termina o combate antes do ataque do monstro
+            elif acao == "Invocar Fantasma para Combate":
+                status_fantasma, vida_fantasma, vida_monstro_nova = usar_fantasma(id_personagem, id_instancia, monstro_stats)
+                if status_fantasma == 'monstro_morto_fantasma':
+                    limpar_tela()
+                    print(f"Você derrotou o monstro! Ganhou {npc_gen['xp']} de xp")
+                    time.sleep(3)
+                    feedbacks = aplicar_xp(id_personagem, npc_gen['xp'])
+                    for msg in feedbacks:
+                        print(msg)
+                        time.sleep(3)
+                    #checar_drops(id_instancia)
+                    time.sleep(3)
+                    break
+                elif status_fantasma == 'fantasma_morreu':
+                    limpar_tela()
+                    print("O fantasma foi derrotado! Agora é sua vez de lutar!")
+                    time.sleep(2)
+                    continue
+                elif status_fantasma == 'cancel':
+                    continue
+                elif vida_monstro_nova is not None:
+                    vida_atual_monstro = vida_monstro_nova
+                    turno = 'monstro'
+                else:
+                    continue
+            
+        # Verifica se o monstro foi derrotado
         if vida_atual_monstro <= 0:
+            limpar_tela()
+            print(f"Você derrotou o monstro! Ganhou {npc_gen['xp']} de xp")
+            time.sleep(3)
+            xp_monstro = npc_gen['xp']
+            feedbacks = aplicar_xp(id_personagem, xp_monstro)
+            for msg in feedbacks:
+                print(msg)
+                time.sleep(3)
+            #checar_drops(id_instancia)
+            time.sleep(1.5)
             break
-        
+
+        if turno == "monstro":
         # Ataque do monstro com cálculo percentual de dano
-        dmg_fisico = calcular_dano_fisico(ataque_fisico_monstro, defesa_fisica_personagem)
-        dmg_magico = calcular_dano_fisico(ataque_magico_monstro, defesa_magica_personagem)
-        dano_monstro = dmg_fisico + dmg_magico
-        vida_atual_personagem = max(0, vida_atual_personagem - dano_monstro)
-        criar_cursor().execute(
-            "UPDATE PERSONAGEM SET vida_atual = %s WHERE id_personagem = %s;",
-            (vida_atual_personagem, id_personagem)
-        )
+            dmg_fisico = calcular_dano_fisico(ataque_fisico_monstro, defesa_fisica_personagem)
+            dmg_magico = calcular_dano_fisico(ataque_magico_monstro, defesa_magica_personagem)
+            dano_monstro = dmg_fisico + dmg_magico
+            vida_atual_personagem = max(0, vida_atual_personagem - dano_monstro)
+            criar_cursor().execute(
+                "UPDATE PERSONAGEM SET vida_atual = %s WHERE id_personagem = %s;",
+                (vida_atual_personagem, id_personagem)
+            )
+
+            limpar_tela()
+            print(f"O monstro causou {dano_monstro} de dano (Fisico:{dmg_fisico} e Magico:{dmg_magico}).")
+            time.sleep(3)
 
         limpar_tela()
-        print(f"O monstro causou {dano_monstro} de dano (Fisico:{dmg_fisico} e Magico:{dmg_magico}).")
-        time.sleep(1.5)
-
-        limpar_tela()
-        print("=== Seu turno de Ação ===")
-        time.sleep(1.5)
+        time.sleep(1)
         turno = 'personagem'
         
         continue
-
-    # Verifica se o monstro foi derrotado
-    if vida_atual_monstro <= 0:
-        limpar_tela()
-        print(f"Você derrotou o monstro! Ganhou {npc_gen['xp']} de xp")
-        time.sleep(1.5)
-        xp_monstro = npc_gen['xp']
-        xp_atual = personagem['exp_atual']
-        novo_xp = xp_atual + xp_monstro
-        cursor = criar_cursor()
-        cursor.execute(
-            "UPDATE public.personagem SET exp_atual = %s WHERE id_personagem = %s;",
-            (novo_xp, id_personagem)
-        )
-        cursor.connection.commit()
-        print(f"Você ganhou {xp_monstro} pontos de EXP.")
-        time.sleep(1.5)
-
-        # Checa drops
-        #checar_drops(id_instancia)
-        time.sleep(1.5)
-
+    
     # Verifica se o personagem morreu
     if vida_atual_personagem <= 0:
         limpar_tela()
         print("Você foi derrotado pelo monstro e morreu!")
-        time.sleep(1.5)
+        time.sleep(3)
 
         # Reduz 10% do XP atual
         xp_atual = personagem['exp_atual']
@@ -287,12 +307,19 @@ def iniciar_combate(id_personagem, id_sala):
             "UPDATE public.espiritualista SET mana_atual = mana_total WHERE id_personagem = %s;",
             (id_personagem,)
         )
+        # Restaura vida do fantasma ao máximo se for Zoiudo
+        id_especie, _ = checar_especie(id_personagem)
+        if id_especie == 1:
+            cursor.execute(
+                "UPDATE public.fantasma SET vida_atual = vida_maxima WHERE id_fantasma = (SELECT id_fantasma FROM public.zoiudo WHERE id_personagem = %s);",
+                (id_personagem,)
+            )
         cursor.connection.commit()
         print(f"Você perdeu {perda_xp} pontos de EXP.")
-        time.sleep(1.5)
+        time.sleep(3)
         limpar_tela()
         print("Você foi levado para a Praça Central para receber cuidados.")
-        time.sleep(1.5)
+        time.sleep(3)
 
         menu = TerminalMenu(["OK"], title="Pressione OK para retornar ao mapa.")
         menu.show()
