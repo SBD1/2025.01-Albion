@@ -61,7 +61,7 @@ def usar_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_mo
     info_espiritualista = obter_info_espiritualista(id_personagem)
     if not info_espiritualista:
         print("Erro: Personagem não é um espiritualista ou não foi encontrado.")
-        time.sleep(2)
+        time.sleep(4)
         return None, None
     
     nivel = info_espiritualista['nivel']
@@ -156,7 +156,7 @@ def usar_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_mo
             limpar_tela()
             print(f"Mana insuficiente! Você precisa de {magia_escolhida['custo_mana']} mana.")
             print(f"Mana atual: {mana_atual}")
-            time.sleep(2)
+            time.sleep(4)
             continue
         
         # Conjura a magia
@@ -240,14 +240,14 @@ def conjurar_magia(id_personagem, magia, ataque_magico, defesa_magica_monstro, i
         print(f"🔮 Mana consumida: {magia['custo_mana']}")
         print(f"🔮 Mana restante: {nova_mana}")
         
-        time.sleep(3)
+        time.sleep(5)
         
         return nova_mana, nova_vida_monstro
         
     except Exception as e:
         print(f"Erro ao conjurar magia: {e}")
         cursor.connection.close()
-        time.sleep(2)
+        time.sleep(5)
         return None
 
 def menu_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_monstro):
