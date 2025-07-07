@@ -52,12 +52,26 @@ def menu_transformacao_draconico(id_personagem):
         time.sleep(4)
         return None
 
-    # Aplica transformação (exemplo: aumenta vida e ataque)
+    # Só permite transformar se não estiver transformado
+    cursor_check = criar_cursor()
+    cursor_check.execute("SELECT turnos_restantes, turnos_maximo_dragao FROM DRACONICO WHERE id_personagem = %s;", (id_personagem,))
+    draco = cursor_check.fetchone()
+    cursor_check.connection.close()
+    if draco and draco['turnos_restantes'] > 0:
+        limpar_tela()
+        print("Você já está transformado! Aguarde acabar a transformação para usar novamente.")
+        time.sleep(3)
+        return None
+    # Aplica transformação e define turnos_restantes
     cursor = criar_cursor()
     try:
         cursor.execute(
             "UPDATE PERSONAGEM SET vida_atual = vida_atual + %s, ataque_fisico = ataque_fisico + %s, stamina_atual = stamina_atual - %s WHERE id_personagem = %s;",
             (aumento_vida, aumento_ataque, custo_stamina, id_personagem)
+        )
+        cursor.execute(
+            "UPDATE DRACONICO SET turnos_restantes = turnos_maximo_dragao WHERE id_personagem = %s;",
+            (id_personagem,)
         )
         cursor.connection.commit()
         cursor.connection.close()
