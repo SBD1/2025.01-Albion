@@ -3,12 +3,9 @@ from simple_term_menu import TerminalMenu
 from game.src.limpar_tela import limpar_tela
 from game.src.operadores.Combate.menu_ataque import logica_atacar, calcular_dano_fisico
 from game.src.operadores.Combate.menu_magia import menu_magia
-<<<<<<< HEAD
 from game.src.operadores.Combate.menu_transformacao import menu_transformacao_draconico
-=======
 from game.src.operadores.Combate.menu_fantasma import usar_fantasma
 from game.src.operadores.Combate.xp import aplicar_xp
->>>>>>> 18f2831cf68192b1a8e6cf6aaf7fae52b1265a94
 # from game.src.operadores.drops.menu_drop import checar_drops
 
 import time
@@ -240,18 +237,12 @@ def iniciar_combate(id_personagem, id_sala):
                     turno = 'monstro'
                 else:
                     continue
-<<<<<<< HEAD
             elif acao == "Usar transformação":
                 resultado = menu_transformacao_draconico(id_personagem)
                 if resultado:
                     turno = 'monstro'
                 else:
                     continue
-            else:
-                # Outras ações mantêm turno do jogador, adiconar depois
-                continue
-=======
->>>>>>> 18f2831cf68192b1a8e6cf6aaf7fae52b1265a94
 
             elif acao == "Invocar Fantasma para Combate":
                 status_fantasma, vida_fantasma, vida_monstro_nova = usar_fantasma(id_personagem, id_instancia, monstro_stats)
