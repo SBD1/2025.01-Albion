@@ -124,11 +124,17 @@ def usar_fantasma(
         p = cursor.fetchone()
         print("Seu fantasma está morto!")
         print(f"Stamina atual: {p['stamina_atual']} / {p['stamina_maxima']}")
-        print(f"Deseja gastar metade da stamina atual para reviver o fantasma? (isso irá restaurar o fantasma para vida máxima)")
+        custo_reviver = p['stamina_maxima'] // 2
+        if p['stamina_atual'] < custo_reviver:
+            print(f"Stamina insuficiente para reviver o fantasma! (Necessário: pelo menos metade da stamina máxima: {custo_reviver})")
+            time.sleep(2)
+            cursor.connection.close()
+            return 'cancel', None, None
+        print(f"Deseja gastar metade da stamina máxima ({custo_reviver}) para reviver o fantasma? (isso irá restaurar o fantasma para vida máxima)")
         menu = TerminalMenu(["Reviver fantasma", "Cancelar"])
         escolha = menu.show()
-        if escolha == 0 and p['stamina_atual'] >= 2:
-            nova_stamina = max(0, p['stamina_atual'] // 2)
+        if escolha == 0:
+            nova_stamina = max(0, p['stamina_atual'] - custo_reviver)
             cursor.execute(
                 "UPDATE public.personagem SET stamina_atual = %s WHERE id_personagem = %s;",
                 (nova_stamina, id_personagem)
