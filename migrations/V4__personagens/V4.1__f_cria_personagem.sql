@@ -29,6 +29,12 @@ BEGIN
         RAISE EXCEPTION 'Espécie de personagem não reconhecida: %', p_especie_personagem;
     END IF;
 
+    INSERT INTO public.INVENTARIO(id_personagem, capacidade)
+    VALUES (v_id_personagem, 10);
+
+    INSERT INTO public.INVENTARIO_EQUIPADOS(id_personagem)
+    VALUES (v_id_personagem);
+
     RETURN v_id_personagem;
 END;
 $$ LANGUAGE plpgsql;
