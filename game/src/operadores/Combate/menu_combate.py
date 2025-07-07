@@ -181,6 +181,22 @@ def iniciar_combate(id_personagem, id_sala):
         print(f"Vida: {vida_atual_personagem}/{vida_maxima_personagem} | Stamina: {stamina_atual_personagem}/{stamina_maxima_personagem}")
         print()
 
+        # Controle de transformação dracônica: decrementa turnos_restantes e reverte bônus se necessário
+        cursor_draco = criar_cursor()
+        cursor_draco.execute("SELECT turnos_restantes, aumento_vida_atual, aumento_ataque_fisico FROM DRACONICO WHERE id_personagem = %s;", (id_personagem,))
+        draco_info = cursor_draco.fetchone()
+        if draco_info and draco_info['turnos_restantes'] > 0:
+            novos_turnos = draco_info['turnos_restantes'] - 1
+            cursor_draco.execute("UPDATE DRACONICO SET turnos_restantes = %s WHERE id_personagem = %s;", (novos_turnos, id_personagem))
+            if novos_turnos == 0:
+                # Reverte bônus ao acabar a transformação
+                cursor_draco.execute(
+                    "UPDATE PERSONAGEM SET vida_atual = GREATEST(vida_atual - %s, 1), ataque_fisico = ataque_fisico - %s WHERE id_personagem = %s;",
+                    (draco_info['aumento_vida_atual'], draco_info['aumento_ataque_fisico'], id_personagem)
+                )
+        cursor_draco.connection.commit()
+        cursor_draco.connection.close()
+
         # Turno Personagem
         if turno == 'personagem':
             # Menu Combate
