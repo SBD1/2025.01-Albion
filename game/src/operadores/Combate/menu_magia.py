@@ -56,14 +56,12 @@ def obter_magias_disponiveis(nivel_personagem):
 
 def usar_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_monstro):
     """Menu principal para usar magias"""
-    
     # Obtém informações do espiritualista
     info_espiritualista = obter_info_espiritualista(id_personagem)
     if not info_espiritualista:
         print("Erro: Personagem não é um espiritualista ou não foi encontrado.")
         time.sleep(4)
         return None, None
-    
     nivel = info_espiritualista['nivel']
     nome = info_espiritualista['nome']
     mana_atual = info_espiritualista['mana_atual']
@@ -250,6 +248,6 @@ def conjurar_magia(id_personagem, magia, ataque_magico, defesa_magica_monstro, i
         time.sleep(5)
         return None
 
-def menu_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_monstro):
-    """Função principal chamada pelo menu de combate"""
-    return usar_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_monstro)
+def menu_magia(id_personagem, id_instancia, monstro_stats):
+    """Função principal chamada pelo menu de combate, agora recebe stats do monstro"""
+    return usar_magia(id_personagem, id_instancia, monstro_stats['defesa_magica'], monstro_stats['vida_atual'])
