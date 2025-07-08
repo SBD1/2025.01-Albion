@@ -6,6 +6,8 @@ from game.src.operadores.Combate.menu_magia import menu_magia
 from game.src.operadores.Combate.menu_transformacao import menu_transformacao_draconico
 from game.src.operadores.Combate.menu_fantasma import usar_fantasma
 from game.src.operadores.Combate.xp import aplicar_xp
+from game.src.operadores.Inventario.abrir_inventario import abrir_inventario
+from game.src.operadores.Inventario.menu_acoes_item import menu_acoes_item 
 # from game.src.operadores.drops.menu_drop import checar_drops
 
 import time
@@ -213,7 +215,15 @@ def iniciar_combate(id_personagem, id_sala):
             if acao == "Fugir":
                 print("=== Você fugiu do combate! ===")
                 break
-            
+            if acao == "Abrir inventário":
+                    resultado = abrir_inventario(id_personagem)
+                    
+                    if resultado == -1 or resultado == "voltar":
+                        time.sleep(1.5)
+                        continue
+                    else:
+                        id_item = resultado[0]
+                        acao = menu_acoes_item(id_item)
             # Lógica de ataque normal
             if acao == "Atacar":
                 stamina_atual_personagem, vida_atual_monstro = logica_atacar(
