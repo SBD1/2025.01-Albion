@@ -25,6 +25,14 @@ def renderizar_grid(stdscr, grid, posicao_jogador):
                 stdscr.addstr(offset_y + i, offset_x + j * 2, "@", curses.color_pair(1))  
             else:
                 stdscr.addstr(offset_y + i, offset_x + j * 2, str(celula))  
+    
+    # Mensagem centralizada abaixo do grid
+    mensagem = "Pressione 'q' para voltar ao menu de ação"
+    mensagem_x = offset_x + (largura_grid - len(mensagem)) // 2
+    mensagem_y = offset_y + altura_grid + 1
+    if mensagem_y < altura_terminal:
+        stdscr.addstr(mensagem_y, mensagem_x, mensagem, curses.A_BOLD)
+
     stdscr.refresh()  
 
 def atualizar_sala(id_personagem, nova_sala_id):
@@ -87,6 +95,10 @@ def iniciar_grid(id_personagem):
                 if combate_result == "mudar_sala":
                     result = "mudar_sala"
                     break
+                
+                monstros_sala.remove(tuple(posicao_jogador))
+                grid[posicao_jogador[0]][posicao_jogador[1]] = " "
+
                 # Retorna ao modo curses após combate
                 stdscr = curses.initscr()
                 curses.curs_set(0)
@@ -95,11 +107,11 @@ def iniciar_grid(id_personagem):
                 curses.init_pair(1, curses.COLOR_GREEN, -1)
                 stdscr.keypad(True)
                 stdscr.timeout(100)
-                monstros_sala.remove(tuple(posicao_jogador))
+                
             key = stdscr.getch()
 
             if key == curses.KEY_UP:
-                if posicao_jogador[0] > 1 and grid[posicao_jogador[0] - 1][posicao_jogador[1]] == ' ':
+                if posicao_jogador[0] > 1 and grid[posicao_jogador[0] - 1][posicao_jogador[1]] in ("🐻‍❄️","🧛","🧟‍♂️","👺","🧌","🦠","🗿"," "):
                     posicao_jogador[0] -= 1
                 elif posicao_jogador[0] == 1 and posicao_jogador[1] == len(grid[0]) // 2:
                     if sala['conexao_norte'] is not None:
@@ -119,7 +131,7 @@ def iniciar_grid(id_personagem):
                         break
 
             elif key == curses.KEY_DOWN:
-                if posicao_jogador[0] < len(grid) - 2 and grid[posicao_jogador[0] + 1][posicao_jogador[1]] == ' ':
+                if posicao_jogador[0] < len(grid) - 2 and grid[posicao_jogador[0] + 1][posicao_jogador[1]] in ("🐻‍❄️","🧛","🧟‍♂️","👺","🧌","🦠","🗿"," "):
                     posicao_jogador[0] += 1
                 elif posicao_jogador[0] == len(grid) - 2 and posicao_jogador[1] == len(grid[0]) // 2:
                     if sala['conexao_sul'] is not None:
@@ -139,7 +151,7 @@ def iniciar_grid(id_personagem):
                         break 
 
             elif key == curses.KEY_LEFT:
-                if posicao_jogador[1] > 1 and grid[posicao_jogador[0]][posicao_jogador[1] - 1] == ' ':
+                if posicao_jogador[1] > 1 and grid[posicao_jogador[0]][posicao_jogador[1] - 1] in ("🐻‍❄️","🧛","🧟‍♂️","👺","🧌","🦠","🗿"," "):
                     posicao_jogador[1] -= 1
                 elif posicao_jogador[1] == 1 and posicao_jogador[0] == len(grid) // 2:
                     if sala['conexao_oeste'] is not None:
@@ -159,7 +171,7 @@ def iniciar_grid(id_personagem):
                         break 
 
             elif key == curses.KEY_RIGHT:
-                if posicao_jogador[1] < len(grid[0]) - 2 and grid[posicao_jogador[0]][posicao_jogador[1] + 1] == ' ':
+                if posicao_jogador[1] < len(grid[0]) - 2 and grid[posicao_jogador[0]][posicao_jogador[1] + 1] in ("🐻‍❄️","🧛","🧟‍♂️","👺","🧌","🦠","🗿"," "):
                     posicao_jogador[1] += 1
                 elif posicao_jogador[1] == len(grid[0]) - 2 and posicao_jogador[0] == len(grid) // 2:
                     if sala['conexao_leste'] is not None:
@@ -179,6 +191,7 @@ def iniciar_grid(id_personagem):
                         break 
 
             elif key == ord('q'):
+                limpar_tela()
                 result = "voltar"
                 break
 
