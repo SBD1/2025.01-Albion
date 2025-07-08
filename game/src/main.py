@@ -40,11 +40,10 @@ def main():
                 elif acao == "abrir inventário":
                     resultado = abrir_inventario(id_personagem)
 
-                    if resultado == -1 or resultado == "voltar":
+                    if not resultado or resultado == -1 or resultado == "voltar":
                         continue
-                    else:
-                        id_item = resultado[0]
-                        acao = menu_acoes_item(id_item)
+                    id_item = resultado[0]
+                    acao = menu_acoes_item(id_item)
 
                 elif acao == "loja":
                     id_item = abrir_loja(id_personagem)

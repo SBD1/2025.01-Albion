@@ -44,5 +44,7 @@ def abrir_inventario(id_personagem):
         acao = menu.show()
         if acao == -1 or opcoes_menu[acao] == "voltar":
             return "voltar"
+        else:
+            return -1
         
 
