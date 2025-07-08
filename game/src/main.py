@@ -38,14 +38,17 @@ def main():
                             break
             
                 elif acao == "abrir inventário":
-                    id_item = abrir_inventario(id_personagem)[0]
-                    if id_item == -1:
-                        continue 
+                    resultado = abrir_inventario(id_personagem)
+
+                    if resultado == -1 or resultado == "voltar":
+                        continue
                     else:
+                        id_item = resultado[0]
                         acao = menu_acoes_item(id_item)
+
                 elif acao == "loja":
                     id_item = abrir_loja(id_personagem)
-                    if id_item != 'voltar':
+                    if id_item != "voltar":
                         id_item = id_item[0]
                         comprar_item(id_personagem, id_item)
                 elif acao == "sair":

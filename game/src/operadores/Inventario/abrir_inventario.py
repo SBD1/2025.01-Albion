@@ -28,10 +28,10 @@ def abrir_inventario(id_personagem):
         )
 
         acao = menu.show()
-        if opcoes_menu[acao] == "voltar":
+        if acao == -1 or opcoes_menu[acao].lower() == "voltar":
             return -1
         else:
-            return itens[acao]['id_instancia'],itens[acao]['nome_item']
+            return itens[acao]['id_instancia'], itens[acao]['nome_item']
     else:
         opcoes_menu = ["Voltar"]
         menu = TerminalMenu(
@@ -42,7 +42,7 @@ def abrir_inventario(id_personagem):
             clear_screen=False
         )
         acao = menu.show()
-        if acao == -1  or opcoes_menu[acao] == "Voltar":
+        if acao == -1 or opcoes_menu[acao] == "voltar":
             return "voltar"
         
 
