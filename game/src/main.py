@@ -5,6 +5,8 @@ from game.src.operadores.Personagem.grid_movimentacao import iniciar_grid
 from game.src.operadores.Personagem.menu_acoes import menu_acoes
 from game.src.operadores.Inventario.abrir_inventario import abrir_inventario
 from game.src.operadores.Inventario.menu_acoes_item import menu_acoes_item
+from game.src.operadores.Loja.abrir_loja import abrir_loja
+from game.src.operadores.Loja.comprar_item import comprar_item
 
 def main():
     while True:
@@ -41,6 +43,11 @@ def main():
                         continue 
                     else:
                         acao = menu_acoes_item(id_item)
+                elif acao == "loja":
+                    id_item = abrir_loja(id_personagem)
+                    if id_item != 'voltar':
+                        id_item = id_item[0]
+                        comprar_item(id_personagem, id_item)
                 elif acao == "sair":
                     print("Saindo do jogo...")
                     break
