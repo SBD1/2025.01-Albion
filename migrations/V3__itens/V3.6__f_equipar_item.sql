@@ -36,6 +36,7 @@ BEGIN
         SELECT CASE
             WHEN a.id_item IS NOT NULL AND i.nome ILIKE '%Peitoral%' THEN 'Peitoral'
             WHEN a.id_item IS NOT NULL AND i.nome ILIKE '%Capacete%' THEN 'Capacete'
+            WHEN a.id_item IS NOT NULL AND i.nome ILIKE '%Escudo%' THEN 'Escudo'
             ELSE NULL
         END
         INTO v_tipo_armadura
@@ -51,6 +52,11 @@ BEGIN
         ELSIF v_tipo_armadura = 'Capacete' THEN
             UPDATE INVENTARIO_EQUIPADOS
             SET slot_armadura_capacete = p_id_instancia_item
+            WHERE id_personagem = v_id_personagem;
+        
+        ELSIF v_tipo_armadura = 'Escudo' THEN
+            UPDATE INVENTARIO_EQUIPADOS
+            SET slot_armadura_escudo = p_id_instancia_item
             WHERE id_personagem = v_id_personagem;
 
         ELSE
