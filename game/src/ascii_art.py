@@ -141,7 +141,7 @@ salas_conexoes = {
 
 import random
 
-def gerar_grid_personalizado_com_saidas(tamanho_vertical, tamanho_horizontal, elemento_blocante, elemento_blocante2, conexoes):
+def gerar_grid_personalizado_com_saidas(tamanho_vertical, tamanho_horizontal, elemento_blocante, elemento_blocante2, conexoes, emoji):
     grid = [[" " for _ in range(tamanho_horizontal)] for _ in range(tamanho_vertical)]
     max_montros=15
 
@@ -183,6 +183,7 @@ def gerar_grid_personalizado_com_saidas(tamanho_vertical, tamanho_horizontal, el
         while True:
             x, y = random.randint(2, tamanho_vertical - 2), random.randint(2, tamanho_horizontal - 2)
             if (x, y) not in saidas and grid[x][y] == " ":
+                grid[x][y] = f"{emoji}"
                 monstros.append((x, y))
                 break
 
@@ -207,12 +208,12 @@ grids = {
 "#  ██████████                        ██████████  #",
 "######################### ########################"],
 
-    "Campos Congelados": gerar_grid_personalizado_com_saidas(15, 50, "🧊","❄️", {"norte": True, "sul": True, "leste": True, "oeste": False}),
-    "Caverna Sombria": gerar_grid_personalizado_com_saidas(15, 50, "🪨","🕳️", {"norte": True, "sul": True, "leste": False, "oeste": True}),
-    "Deserto Escaldante": gerar_grid_personalizado_com_saidas(15, 50,"🟤","🔥", {"norte": False, "sul": True, "leste": True, "oeste": True}),
-    "Floresta do Leste": gerar_grid_personalizado_com_saidas(15, 50,"🌳","🌲", {"norte": False, "sul": False, "leste": False, "oeste": True}),
-    "Montanha Nevada": gerar_grid_personalizado_com_saidas(15, 50, "❄️", "⛰️", {"norte": False, "sul": True, "leste": False, "oeste": False}),
-    "Pântano Sombrio": gerar_grid_personalizado_com_saidas(15, 50,"🍄","🟢", {"norte": False, "sul": False, "leste": True, "oeste": False}),
-    "Ruínas Antigas": gerar_grid_personalizado_com_saidas(15, 50,"🪨", "🏛️", {"norte": True, "sul": False, "leste": False, "oeste": True})
+    "Campos Congelados": gerar_grid_personalizado_com_saidas(15, 50, "🧊","❄️", {"norte": True, "sul": True, "leste": True, "oeste": False}, "🐻‍❄️"),
+    "Caverna Sombria": gerar_grid_personalizado_com_saidas(15, 50, "🪨","🕳️", {"norte": True, "sul": True, "leste": False, "oeste": True},   "🧛"),
+    "Deserto Escaldante": gerar_grid_personalizado_com_saidas(15, 50,"🟤","🔥", {"norte": False, "sul": True, "leste": True, "oeste": True}, "🧟‍♂️"),
+    "Floresta do Leste": gerar_grid_personalizado_com_saidas(15, 50,"🌳","🌲", {"norte": False, "sul": False, "leste": False, "oeste": True},"👺"),
+    "Montanha Nevada": gerar_grid_personalizado_com_saidas(15, 50, "❄️", "⛰️", {"norte": False, "sul": True, "leste": False, "oeste": False},"🧌"),
+    "Pântano Sombrio": gerar_grid_personalizado_com_saidas(15, 50,"🍄","🟢", {"norte": False, "sul": False, "leste": True, "oeste": False},  "🦠"),
+    "Ruínas Antigas": gerar_grid_personalizado_com_saidas(15, 50,"🪨", "🏛️", {"norte": True, "sul": False, "leste": False, "oeste": True},   "🗿")
 }
 
