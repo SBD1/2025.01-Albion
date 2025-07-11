@@ -1,3 +1,5 @@
+-- Correção da função f_equipar_item para usar slot de artefato correto
+
 CREATE OR REPLACE FUNCTION f_equipar_item(
     p_id_instancia_item INTEGER
 )
@@ -64,8 +66,12 @@ BEGIN
         END IF;
 
     ELSIF v_tipo_equipavel = 'Artefato' THEN
-        UPDATE INVENTARIO_EQUIPADOS
-        SET slot_armadura_capacete = p_id_instancia_item
+        IF NOT EXISTS (SELECT 1 FROM ESPIRITUALISTA WHERE id_personagem = v_id_personagem) THEN
+            RAISE EXCEPTION 'Apenas espiritualistas podem equipar artefatos.';
+        END IF;
+        
+        UPDATE ESPIRITUALISTA
+        SET slot_artefato = p_id_instancia_item
         WHERE id_personagem = v_id_personagem;
 
     ELSE
