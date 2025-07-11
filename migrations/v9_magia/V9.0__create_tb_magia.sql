@@ -7,6 +7,4 @@ CREATE TABLE IF NOT EXISTS MAGIA (
     custo_mana INTEGER NOT NULL,
     dano_base INTEGER DEFAULT 0,
     cura_base INTEGER DEFAULT 0
-   
 );
-
