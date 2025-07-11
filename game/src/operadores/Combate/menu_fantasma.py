@@ -1,9 +1,8 @@
-from game.src.database import criar_cursor
-from simple_term_menu import TerminalMenu
-from game.src.limpar_tela import limpar_tela
-from game.src.operadores.Combate.menu_ataque import calcular_dano_fisico
-from game.src.operadores.Combate.menu_magia import calcular_dano_magico
-import time
+from database import criar_cursor
+from game.src.operadores.Combate.logica_ataque import calcular_dano_fisico
+from operadores.Combate.menu_magia import calcular_dano_magico
+# Importa MenuPyGame para usar menus em Pygame
+from operadores.Menus.estrutura_menu_pygame import MenuPyGame
 
 def iniciar_combate_fantasma(
     id_personagem: int,
@@ -45,52 +44,55 @@ def iniciar_combate_fantasma(
 
     vida_atual_fantasma = fantasma_stats.get('vida_atual', vida_maxima_fantasma)
     vida_atual_monstro = monstro_stats.get('vida_atual', vida_maxima_monstro)
+
+    menu = MenuPyGame()
+    selected = 0
     while vida_atual_fantasma > 0 and vida_atual_monstro > 0:
-        limpar_tela()
-        print("=== Status do Monstro ===")
-        print(f"Espécie: {especie_monstro} | Vida: {vida_atual_monstro}/{vida_maxima_monstro}")
-        print()
-        print("=== Status do Fantasma ===")
-        print(f"Nível: {nivel_fantasma} | EXP: {exp_atual_fantasma}/{exp_maxima_fantasma}")
-        print(f"Vida: {vida_atual_fantasma}/{vida_maxima_fantasma}")
-        print()
-        op = ["Atacar", "Cancelar invocação"]
-        menu = TerminalMenu(op)
-        escolha = menu.show()
-        if op[escolha] == "Cancelar invocação":
+        # Exibe stats no menu de combate
+        status_info = {
+            'monstro': {'especie': especie_monstro, 'vida_atual': vida_atual_monstro, 'vida_maxima': vida_maxima_monstro},
+            'personagem': {'nome': nome_fantasma, 'nivel': nivel_fantasma, 'exp_atual': exp_atual_fantasma, 'exp_maxima': exp_maxima_fantasma, 'vida_atual': vida_atual_fantasma, 'vida_maxima': vida_maxima_fantasma}
+        }
+        opcoes = ["Atacar", "Cancelar invocação"]
+        escolha = menu.set_menu_combate("👻 Combate Fantasma 👻", status_info, opcoes, selected)
+        selected = escolha if escolha >= 0 else selected
+        acao = opcoes[escolha] if escolha >= 0 else None
+        if acao == "Cancelar invocação":
             status = 'cancel'
             break
-        # Fantasma ataca (dano físico + mágico)
+        # Fantasma ataca
         dano_fis = calcular_dano_fisico(ataque_fisico_fantasma, defesa_fisica_monstro)
         dano_mag = calcular_dano_magico(ataque_magico_fantasma, defesa_magica_monstro)
         dano_total = dano_fis + dano_mag
         vida_atual_monstro = max(0, vida_atual_monstro - dano_total)
-        cursor = criar_cursor()
-        cursor.execute(
+        criar_cursor().execute(
             "UPDATE public.instancia_npc_generico SET vida_atual = %s WHERE id_instancia = %s;",
             (vida_atual_monstro, id_instancia)
         )
-        limpar_tela()
-        print(f"👻 Fantasma causou {dano_fis} 🗡️ físico e {dano_mag} ✨ mágico ao monstro. Total: {dano_total} 💥")
-        time.sleep(3)
+        # Feedback de ataque do fantasma
+        menu.feedback("ATAQUE FANTASMA", f"Fantasma causou {dano_fis} físico e {dano_mag} mágico! Total: {dano_total}", duration=3000)
         if vida_atual_monstro <= 0:
             status = 'monstro_morto_fantasma'
             break
-        # Monstro ataca fantasma
+
+        # Turno do monstro
+        menu.feedback("TURNO MONSTRO", "É a vez do monstro!", duration=3000)
         dmg_fis = calcular_dano_fisico(ataque_fisico_monstro, defesa_fisica_fantasma)
         dmg_mag = calcular_dano_magico(ataque_magico_monstro, defesa_magica_fantasma)
         dano_mon = dmg_fis + dmg_mag
         vida_atual_fantasma = max(0, vida_atual_fantasma - dano_mon)
-        cursor.execute(
+        criar_cursor().execute(
             "UPDATE public.fantasma SET vida_atual = %s WHERE id_fantasma = (SELECT id_fantasma FROM public.zoiudo WHERE id_personagem = %s);",
             (vida_atual_fantasma, id_personagem)
         )
-        limpar_tela()
-        print(f"👾 Monstro causou {dano_mon} de dano ao fantasma. ({dmg_fis} 🗡️ físico, {dmg_mag} ✨ mágico)")
-        time.sleep(3)
+        # Feedback de ataque do monstro ao fantasma
+        menu.feedback("ATAQUE INIMIGO", f"Monstro causou {dano_mon} de dano ao seu fantasma!", duration=3000)
         if vida_atual_fantasma <= 0:
             status = 'fantasma_morreu'
             break
+
+        # Retorno ao fantasma
+        menu.feedback("TURNO FANTASMA", "É a vez do seu fantasma!", duration=3000)
     return status, vida_atual_fantasma, vida_atual_monstro
 
 def usar_fantasma(
@@ -102,6 +104,7 @@ def usar_fantasma(
     Executa loop completo de combate do fantasma vs monstro.
     Retorna (status, nova_vida_fantasma, nova_vida_monstro).
     """
+    menu = MenuPyGame()
     cursor = criar_cursor()
     cursor.execute(
         "SELECT F.vida_atual, F.vida_maxima, F.ataque_fisico, F.ataque_magico, F.defesa_fisica, F.defesa_magica "
@@ -112,27 +115,32 @@ def usar_fantasma(
     fant = cursor.fetchone()
     if not fant:
         cursor.connection.close()
-        print("Seu fantasma não está disponível para lutar.")
-        time.sleep(3)
+        menu.feedback("FANTASMA", "Seu fantasma não está disponível para lutar.", duration=2000)
         return 'cancel', None, None
     if fant['vida_atual'] <= 0:
-        # Fantasma morto: oferecer opção de reviver
         cursor.execute(
             "SELECT stamina_atual, stamina_maxima FROM public.personagem WHERE id_personagem = %s;",
             (id_personagem,)
         )
         p = cursor.fetchone()
-        print("Seu fantasma está morto!")
-        print(f"Stamina atual: {p['stamina_atual']} / {p['stamina_maxima']}")
         custo_reviver = p['stamina_maxima'] // 2
+
+        menu.feedback(
+            "FANTASMA MORTO",
+            f"Seu fantasma está morto!\nStamina: {p['stamina_atual']} / {p['stamina_maxima']}",
+            duration=3000
+        )
         if p['stamina_atual'] < custo_reviver:
-            print(f"Stamina insuficiente para reviver o fantasma! (Necessário: pelo menos metade da stamina máxima: {custo_reviver})")
-            time.sleep(2)
+            menu.feedback(
+                "FANTASMA",
+                f"Stamina insuficiente para reviver o fantasma! (Necessário: {custo_reviver})",
+                duration=3000
+            )
             cursor.connection.close()
             return 'cancel', None, None
-        print(f"Deseja gastar metade da stamina máxima ({custo_reviver}) para reviver o fantasma? (isso irá restaurar o fantasma para vida máxima)")
-        menu = TerminalMenu(["Reviver fantasma", "Cancelar"])
-        escolha = menu.show()
+        
+        menu_rev = MenuPyGame()
+        escolha = menu_rev.set_menu("Reviver Fantasma?", ["Reviver fantasma", "Cancelar"])  
         if escolha == 0:
             nova_stamina = max(0, p['stamina_atual'] - custo_reviver)
             cursor.execute(
@@ -144,9 +152,7 @@ def usar_fantasma(
                 (id_personagem,)
             )
             cursor.connection.commit()
-            print("Fantasma revivido!")
-            time.sleep(1.5)
-            # Recarrega stats do fantasma
+            menu_rev.feedback("FANTASMA", "Fantasma revivido!", duration=2000)
             cursor.execute(
                 "SELECT F.vida_atual, F.vida_maxima, F.ataque_fisico, F.ataque_magico, F.defesa_fisica, F.defesa_magica "
                 "FROM public.ZOIUDO Z JOIN public.FANTASMA F ON Z.id_fantasma = F.id_fantasma "
@@ -158,6 +164,16 @@ def usar_fantasma(
             cursor.connection.close()
             return 'cancel', None, None
     cursor.connection.close()
+
+    db_cur = criar_cursor()
+    db_cur.execute(
+        "SELECT vida_atual FROM public.instancia_npc_generico WHERE id_instancia = %s;",
+        (id_instancia,)
+    )
+    row = db_cur.fetchone()
+    if row and 'vida_atual' in row:
+        monstro_stats['vida_atual'] = row['vida_atual']
+    db_cur.connection.close()
     status, vida_f, vida_m = iniciar_combate_fantasma(
         id_personagem,
         fant,
