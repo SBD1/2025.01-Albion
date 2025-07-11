@@ -1,6 +1,6 @@
 from simple_term_menu import TerminalMenu
-from game.src.database import criar_cursor
-from game.src.limpar_tela import limpar_tela
+from database import criar_cursor
+from limpar_tela import limpar_tela
 
 def comprar_item(id_personagem, id_item):
     cursor = criar_cursor()
