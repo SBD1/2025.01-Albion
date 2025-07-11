@@ -24,7 +24,7 @@ BEGIN
     WHERE e.id_item = v_id_item;
 
     IF v_tipo_equipavel IS NULL THEN
-        RAISE EXCEPTION 'Item com id_instancia % não é desequipável.', p_id_instancia_item;
+        RAISE EXCEPTION 'Item com id_instancia % não é equipável.', p_id_instancia_item;
     END IF;
 
     IF v_tipo_equipavel = 'Arma' THEN
@@ -53,7 +53,7 @@ BEGIN
             UPDATE INVENTARIO_EQUIPADOS
             SET slot_armadura_capacete = NULL
             WHERE id_personagem = v_id_personagem;
-
+        
         ELSIF v_tipo_armadura = 'Escudo' THEN
             UPDATE INVENTARIO_EQUIPADOS
             SET slot_armadura_escudo = NULL
@@ -64,14 +64,14 @@ BEGIN
         END IF;
 
     ELSIF v_tipo_equipavel = 'Artefato' THEN
-        UPDATE INVENTARIO_EQUIPADOS
-        SET slot_armadura_capacete = NULL
+        UPDATE ESPIRITUALISTA
+        SET slot_artefato = NULL
         WHERE id_personagem = v_id_personagem;
 
     ELSE
         RAISE EXCEPTION 'Tipo de item não reconhecido: %', v_tipo_equipavel;
     END IF;
 
-    RAISE NOTICE 'Item com id_instancia % equipado com sucesso.', p_id_instancia_item;
+    RAISE NOTICE 'Item com id_instancia % desequipado com sucesso.', p_id_instancia_item;
 END;
 $$ LANGUAGE plpgsql;

@@ -1,7 +1,5 @@
-from game.src.database import criar_cursor
-import time
+from database import criar_cursor
 import math
-from game.src.limpar_tela import limpar_tela
 
 def calcular_dano_fisico(ataque: int, defesa: int, fator: int = 100) -> int:
     """
@@ -29,10 +27,4 @@ def logica_atacar(id_personagem, stamina_atual_personagem, ataque_fisico_persona
         (nova_vida_monstro, id_instancia)
     )
 
-    limpar_tela()
-    print(f"Você causou {dano_personagem} de dano ao monstro.")
-    time.sleep(1.5)
-    limpar_tela()
-    print("=== Turno do Monstro Atacar ===")
-    time.sleep(1.5)
     return nova_stamina, nova_vida_monstro

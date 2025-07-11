@@ -1,4 +1,3 @@
-
 INSERT INTO
     public.MAGIA (
         nome,
@@ -11,7 +10,7 @@ INSERT INTO
 VALUES (
         'Toque Espiritual',
         'Canaliza energia espiritual através das mãos para causar dano direto ao inimigo.',
-        1,
+        0,
         15,
         25,
         0

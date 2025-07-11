@@ -3,7 +3,7 @@
 -- Yeti (Campos Congelados)
 SELECT criar_npc_generico (
         'Yeti', 'Campos Congelados', 100, -- XP
-        250, -- Vida Máxima (criatura resistente)
+        40, 250, -- Vida Máxima (criatura resistente)
         70, -- Ataque Físico (força bruta)
         10, -- Ataque Mágico (pouca aptidão mágica)
         60, -- Defesa Física (pelagem grossa)
@@ -13,7 +13,7 @@ SELECT criar_npc_generico (
 -- Vampiro (Caverna Sombria)
 SELECT criar_npc_generico (
         'Vampiro', 'Caverna Sombria', 120, -- XP
-        150, -- Vida Máxima 
+        20, 150, -- Vida Máxima 
         40, -- Ataque Físico 
         85, -- Ataque Mágico (habilidades de sangue/sombra)
         35, -- Defesa Física 
@@ -23,7 +23,7 @@ SELECT criar_npc_generico (
 -- Múmia (Deserto Escaldante)
 SELECT criar_npc_generico (
         'Múmia', 'Deserto Escaldante', 90, -- XP
-        180, -- Vida Máxima (resistência ancestral)
+        30, 180, -- Vida Máxima (resistência ancestral)
         50, -- Ataque Físico 
         60, -- Ataque Mágico (maldições)
         55, -- Defesa Física (bandagens endurecidas)
@@ -33,7 +33,7 @@ SELECT criar_npc_generico (
 -- Slime-Corrompido (Pântano Sombrio)
 SELECT criar_npc_generico (
         'Slime-Corrompido', 'Pântano Sombrio', 70, -- XP
-        120, -- Vida Máxima 
+        20, 120, -- Vida Máxima 
         30, -- Ataque Físico 
         65, -- Ataque Mágico (ácido/corrosão)
         50, -- Defesa Física (corpo gelatinoso)
@@ -43,7 +43,7 @@ SELECT criar_npc_generico (
 -- Troll (Montanha Nevada)
 SELECT criar_npc_generico (
         'Troll', 'Montanha Nevada', 150, -- XP
-        300, -- Vida Máxima (regeneração)
+        80, 300, -- Vida Máxima (regeneração)
         85, -- Ataque Físico (força bruta)
         5, -- Ataque Mágico (quase nulo)
         70, -- Defesa Física (pele dura)
@@ -53,7 +53,7 @@ SELECT criar_npc_generico (
 -- Globin (Floresta do Leste)
 SELECT criar_npc_generico (
         'Globin', 'Floresta do Leste', 50, -- XP
-        50, -- Vida Máxima (criatura pequena)
+        10, 50, -- Vida Máxima (criatura pequena)
         45, -- Ataque Físico (armas primitivas)
         25, -- Ataque Mágico (pouca magia)
         30, -- Defesa Física 
@@ -63,7 +63,7 @@ SELECT criar_npc_generico (
 -- Golem (Ruínas Antigas)
 SELECT criar_npc_generico (
         'Golem', 'Ruínas Antigas', 200, -- XP
-        350, -- Vida Máxima (construção robusta)
+        100, 350, -- Vida Máxima (construção robusta)
         90, -- Ataque Físico (corpo de pedra)
         35, -- Ataque Mágico (runas antigas)
         80, -- Defesa Física (matéria mineral)

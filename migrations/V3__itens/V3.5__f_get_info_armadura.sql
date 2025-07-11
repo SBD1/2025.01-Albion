@@ -6,9 +6,7 @@ RETURNS TABLE (
     descricao TEXT,
     aumento_defesa_fisica INTEGER,
     aumento_defesa_magica INTEGER,
-    aumento_vida_maxima INTEGER,
-    durabilidade_atual INTEGER,
-    durabilidade_maxima INTEGER
+    aumento_vida_maxima INTEGER
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -17,9 +15,7 @@ BEGIN
         i.descricao,
         a.aumento_defesa_fisica,
         a.aumento_defesa_magica,
-        a.aumento_vida_maxima,
-        ii.durabilidade_atual,
-        e.durabilidade_maxima
+        a.aumento_vida_maxima
     FROM 
         INSTANCIA_ITEM ii
     JOIN 

@@ -2,6 +2,7 @@ CREATE OR REPLACE FUNCTION criar_npc_generico (
     especie_npc VARCHAR(50),
     nome_sala_npc VARCHAR(50),
     xp_npc INTEGER,
+    ouro_npc INTEGER,
     vida_maxima_npc INTEGER,
     ataque_fisico_npc INTEGER,
     ataque_magico_npc INTEGER,
@@ -22,7 +23,8 @@ BEGIN
 
     INSERT INTO NPC_GENERICO(
         id_npc, 
-        xp, 
+        xp,
+        drop_ouro, 
         vida_maxima, 
         ataque_fisico, 
         ataque_magico, 
@@ -31,7 +33,8 @@ BEGIN
     )
     VALUES(
         npc_id, 
-        xp_npc, 
+        xp_npc,
+        ouro_npc, 
         vida_maxima_npc, 
         ataque_fisico_npc, 
         ataque_magico_npc, 
