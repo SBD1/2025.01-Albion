@@ -1,7 +1,5 @@
-from game.src.database import criar_cursor
-from simple_term_menu import TerminalMenu
-from game.src.limpar_tela import limpar_tela
-import time
+from database import criar_cursor
+from operadores.Menus.estrutura_menu_pygame import MenuPyGame
 import math
 
 def calcular_dano_magico(ataque_magico: int, defesa_magica: int, fator: int = 100) -> int:
@@ -19,13 +17,11 @@ def obter_info_espiritualista(id_personagem):
     """Obtém informações do personagem espiritualista"""
     cursor = criar_cursor()
     try:
-        # Busca informações do personagem e espiritualista
-        query = """
-        SELECT p.nivel, p.nome, e.mana_atual, e.mana_total, e.ataque_magico
-        FROM PERSONAGEM p
-        JOIN ESPIRITUALISTA e ON p.id_personagem = e.id_personagem
-        WHERE p.id_personagem = %s
-        """
+        query = (
+            "SELECT p.nivel, p.nome, e.mana_atual, e.mana_total, e.ataque_magico "
+            "FROM PERSONAGEM p JOIN ESPIRITUALISTA e ON p.id_personagem = e.id_personagem "
+            "WHERE p.id_personagem = %s"
+        )
         cursor.execute(query, (id_personagem,))
         resultado = cursor.fetchone()
         cursor.connection.close()
@@ -39,28 +35,29 @@ def obter_magias_disponiveis(nivel_personagem):
     """Obtém todas as magias que o personagem pode usar baseado no nível"""
     cursor = criar_cursor()
     try:
-        query = """
-        SELECT id_magia, nome, descricao, nivel_requerido, custo_mana, dano_base, cura_base
-        FROM public.MAGIA
-        WHERE nivel_requerido <= %s
-        ORDER BY nivel_requerido ASC, nome ASC
-        """
+        query = (
+            "SELECT id_magia, nome, descricao, nivel_requerido, custo_mana, dano_base, cura_base "
+            "FROM public.MAGIA WHERE nivel_requerido <= %s "
+            "ORDER BY nivel_requerido ASC, nome ASC"
+        )
         cursor.execute(query, (nivel_personagem,))
         magias = cursor.fetchall()
-        cursor.connection.close()
         return magias
     except Exception as e:
-        print(f"Erro ao obter magias disponíveis: {e}")
-        cursor.connection.close()
+        menu = MenuPyGame()
+        print(f"Erro ao obter magias: {e}")
         return []
+    finally:
+        if cursor and hasattr(cursor, 'connection'):
+            cursor.connection.close()
 
 def usar_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_monstro):
     """Menu principal para usar magias"""
+    menu = MenuPyGame()
     # Obtém informações do espiritualista
     info_espiritualista = obter_info_espiritualista(id_personagem)
     if not info_espiritualista:
         print("Erro: Personagem não é um espiritualista ou não foi encontrado.")
-        time.sleep(4)
         return None, None
     nivel = info_espiritualista['nivel']
     nome = info_espiritualista['nome']
@@ -68,51 +65,21 @@ def usar_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_mo
     mana_total = info_espiritualista['mana_total']
     ataque_magico = info_espiritualista['ataque_magico']
     
-    # DEBUG: Vamos verificar o que está acontecendo
-    print(f"DEBUG: Nível do personagem: {nivel}")
-    print(f"DEBUG: Nome do personagem: {nome}")
-    
     # Obtém magias disponíveis
     magias_disponiveis = obter_magias_disponiveis(nivel)
     
-    # DEBUG: Verificar magias retornadas
-    print(f"DEBUG: Magias encontradas: {len(magias_disponiveis)}")
-    for magia in magias_disponiveis:
-        print(f"DEBUG: - {magia['nome']} (Nível {magia['nivel_requerido']})")
-    
     if not magias_disponiveis:
-        limpar_tela()
-        print("Nenhuma magia disponível para o seu nível atual.")
-        print(f"Seu nível atual: {nivel}")
-        
-        # Vamos verificar se existem magias no banco
-        cursor = criar_cursor()
-        try:
-            cursor.execute("SELECT COUNT(*) as total FROM MAGIA")
-            total_magias = cursor.fetchone()['total']
-            print(f"Total de magias no banco: {total_magias}")
-            
-            cursor.execute("SELECT nome, nivel_requerido FROM MAGIA ORDER BY nivel_requerido")
-            todas_magias = cursor.fetchall()
-            print("Todas as magias no banco:")
-            for magia in todas_magias:
-                print(f"- {magia['nome']} (Nível {magia['nivel_requerido']})")
-            cursor.connection.close()
-        except Exception as e:
-            print(f"Erro ao verificar magias no banco: {e}")
-            cursor.connection.close()
-        
-        input("Pressione Enter para continuar...")
+        menu = MenuPyGame()
+        menu.feedback(
+            "MAGIA",
+            f"Nenhuma magia disponível para seu nível atual.\nNível: {nivel}",
+            duration=3000
+        )
         return None, None
     
     while True:
-        limpar_tela()
-        print("=== MENU DE MAGIAS ===")
-        print(f"Espiritualista: {nome} | Nível: {nivel}")
-        print(f"Mana: {mana_atual}/{mana_total}")
-        print()
-        
-        # Cria opções do menu
+        # Menu de seleção de magia
+        subtitle = f"Espiritualista: {nome} | Nível: {nivel}\nMana: {mana_atual}/{mana_total}"
         opcoes_menu = []
         magias_validas = []
         
@@ -137,12 +104,7 @@ def usar_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_mo
         
         opcoes_menu.append("Voltar")
         
-        menu = TerminalMenu(
-            opcoes_menu,
-            title="Escolha uma magia para conjurar:"
-        )
-        
-        escolha = menu.show()
+        escolha = menu.set_menu("Escolha uma magia para conjurar:", opcoes_menu, subtitle=subtitle)
         
         if escolha == len(opcoes_menu) - 1:  # Voltar
             return None, None
@@ -151,10 +113,7 @@ def usar_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_mo
         
         # Verifica se tem mana suficiente
         if mana_atual < magia_escolhida['custo_mana']:
-            limpar_tela()
-            print(f"Mana insuficiente! Você precisa de {magia_escolhida['custo_mana']} mana.")
-            print(f"Mana atual: {mana_atual}")
-            time.sleep(4)
+            menu.feedback("MAGIA", f"Mana insuficiente! Necessário {magia_escolhida['custo_mana']} mana.\nMana atual: {mana_atual}", duration=3000)
             continue
         
         # Conjura a magia
@@ -223,29 +182,23 @@ def conjurar_magia(id_personagem, magia, ataque_magico, defesa_magica_monstro, i
         cursor.connection.commit()
         cursor.connection.close()
         
-        # Mostra resultado
-        limpar_tela()
-        print(f"✨ {magia['nome']} conjurada com sucesso! ✨")
-        print(f"Descrição: {magia['descricao']}")
-        print()
-        
+        # Feedback via Pygame
+        menu = MenuPyGame()
+        details = []
         if dano_final > 0:
-            print(f"💥 Dano causado ao monstro: {dano_final}")
-        
+            details.append(f"Dano: {dano_final}")
         if cura_final > 0:
-            print(f"💚 Vida restaurada: {cura_final}")
-        
-        print(f"🔮 Mana consumida: {magia['custo_mana']}")
-        print(f"🔮 Mana restante: {nova_mana}")
-        
-        time.sleep(5)
+            details.append(f"Cura: {cura_final}")
+        details.append(f"Mana consumida: {magia['custo_mana']}")
+        details.append(f"Mana restante: {nova_mana}")
+        texto = f"{magia['descricao']}\n" + "\n".join(details)
+        menu.feedback(f"{magia['nome']}", texto, duration=5000)
         
         return nova_mana, nova_vida_monstro
         
     except Exception as e:
         print(f"Erro ao conjurar magia: {e}")
         cursor.connection.close()
-        time.sleep(5)
         return None
 
 def menu_magia(id_personagem, id_instancia, monstro_stats):
