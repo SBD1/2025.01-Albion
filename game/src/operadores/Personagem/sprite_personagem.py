@@ -6,10 +6,10 @@ CELL_SIZE = 32
 SPRITE_PATH_PERSONAGEM = os.path.join(os.path.dirname(__file__), '../../../assets/main.png')
 
 # Retângulos para cada direção do personagem
-PERSONAGEM_CIMA_RECT = pygame.Rect(17, 15, 30, 46)
-PERSONAGEM_ESQUERDA_RECT = pygame.Rect(22, 79, 20, 46)
-PERSONAGEM_BAIXO_RECT = pygame.Rect(17, 143, 30, 46)
-PERSONAGEM_DIREITA_RECT = pygame.Rect(22, 206, 20, 46)
+PERSONAGEM_CIMA_RECT = pygame.Rect(0, 0, 52, 52)
+PERSONAGEM_ESQUERDA_RECT = pygame.Rect(0, 52, 52, 52)
+PERSONAGEM_BAIXO_RECT = pygame.Rect(0, 104, 52, 52)
+PERSONAGEM_DIREITA_RECT = pygame.Rect(0, 156, 52, 52)
 
 def carregar_sprites_personagem():
     """Carrega e redimensiona todos os sprites do personagem para cada direção."""
@@ -75,12 +75,29 @@ def carregar_sprites_personagem():
             fallback_sprites[direcao] = fallback
         return fallback_sprites
 
-def desenhar_personagem_sprite(screen, pos_jogador, direcao_atual, sprites_personagem):
-    """Desenha o sprite do personagem na direção correta."""
+def desenhar_personagem_sprite(screen, pos_jogador, direcao_atual, sprites_personagem, cell_size=None, offset=None):
+    """Desenha o sprite do personagem na direção correta com suporte a offset e cell_size customizado."""
+    if cell_size is None:
+        cell_size = CELL_SIZE
+    if offset is None:
+        offset = (0, 0)
+    
+    offset_x, offset_y = offset
+    
     if sprites_personagem and direcao_atual in sprites_personagem:
-        x, y = pos_jogador[1] * CELL_SIZE, pos_jogador[0] * CELL_SIZE
-        screen.blit(sprites_personagem[direcao_atual], (x, y))
+        # Calcular posição com offset e cell_size customizado
+        x = offset_x + pos_jogador[1] * cell_size
+        y = offset_y + pos_jogador[0] * cell_size
+        
+        # Redimensionar sprite se necessário
+        sprite_original = sprites_personagem[direcao_atual]
+        if cell_size != CELL_SIZE:
+            sprite_redimensionado = pygame.transform.scale(sprite_original, (cell_size, cell_size))
+            screen.blit(sprite_redimensionado, (x, y))
+        else:
+            screen.blit(sprite_original, (x, y))
     else:
         # Fallback para desenho com retângulo se sprites não estiverem disponíveis
-        x, y = pos_jogador[1] * CELL_SIZE, pos_jogador[0] * CELL_SIZE
-        pygame.draw.rect(screen, (0, 255, 0), (x, y, CELL_SIZE, CELL_SIZE), 3)
+        x = offset_x + pos_jogador[1] * cell_size
+        y = offset_y + pos_jogador[0] * cell_size
+        pygame.draw.rect(screen, (0, 255, 0), (x, y, cell_size, cell_size), 3)
