@@ -8,7 +8,7 @@ INSERT INTO
 VALUES (
         'Espada de Madeira',
         'Uma espada simples feita de madeira.',
-        5,
+        1,
         'Equipavel'
     ),
     (
@@ -32,7 +32,7 @@ VALUES (
     (
         'Peitoral de Madeira',
         'Proteção básica feita de madeira.',
-        5,
+        1,
         'Equipavel'
     ),
     (
@@ -56,7 +56,7 @@ VALUES (
     (
         'Colar da Serenidade',
         'Um colar que emite uma aura de calma e concentração.',
-        5,
+        1,
         'Equipavel'
     ),
     (
@@ -80,7 +80,7 @@ VALUES (
     (
         'Capacete de Madeira',
         'Proteção básica para a cabeça feita de madeira.',
-        5,
+        1,
         'Equipavel'
     ),
     (
@@ -104,7 +104,7 @@ VALUES (
     (
         'Escudo de Madeira',
         'Um escudo leve feito de madeira resistente.',
-        5,
+        1,
         'Equipavel'
     ),
     (
@@ -128,7 +128,7 @@ VALUES (
     (
         'Fruta Silvestre',
         'Uma fruta pequena e doce encontrada na floresta.',
-        5,
+        1,
         'Nao-Equipavel'
     ),
     (
@@ -152,7 +152,7 @@ VALUES (
     (
         'Poção de Mana Fraca',
         'Restaura uma pequena quantidade de mana.',
-        5,
+        1,
         'Nao-Equipavel'
     ),
     (
@@ -570,7 +570,7 @@ INSERT INTO
     public.ARTEFATO (
         id_item,
         aumento_ataque_magico,
-        mana_maxima
+        aumento_mana_maxima
     )
 VALUES (
         (

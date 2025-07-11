@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS ARMADURA (
 CREATE TABLE IF NOT EXISTS ARTEFATO (
     id_item INTEGER PRIMARY KEY REFERENCES public.EQUIPAVEL (id_item),
     aumento_ataque_magico INTEGER NOT NULL,
-    mana_maxima INTEGER NOT NULL
+    aumento_mana_maxima INTEGER NOT NULL
 );
 -- Subclasse Item - Nao-equipavel --
 CREATE TABLE IF NOT EXISTS NEQUIPAVEL (
