@@ -11,8 +11,9 @@ def iniciar_combate_fantasma(
     id_instancia: int
 ) -> tuple[str, int, int]:
     """
-    Loop de combate entre fantasma e monstro. Recebe dicts de stats. Retorna (status, vida_fantasma, vida_monstro).
-    status: 'cancel', 'fantasma_morreu', 'monstro_morto'
+    Loop de combate entre fantasma e monstro. Recebe dicts de stats. 
+    Retorna (status, vida_fantasma, vida_monstro).
+    status: 'cancel', 'derrota', 'vitoria'
     """
     # Busca informações completas do fantasma (nome, nivel, exp)
     cursor = criar_cursor()
@@ -72,7 +73,7 @@ def iniciar_combate_fantasma(
         # Feedback de ataque do fantasma
         menu.feedback("ATAQUE FANTASMA", f"Fantasma causou {dano_fis} físico e {dano_mag} mágico! Total: {dano_total}", duration=3000)
         if vida_atual_monstro <= 0:
-            status = 'monstro_morto_fantasma'
+            status = 'vitoria'
             break
 
         # Turno do monstro
@@ -88,7 +89,7 @@ def iniciar_combate_fantasma(
         # Feedback de ataque do monstro ao fantasma
         menu.feedback("ATAQUE INIMIGO", f"Monstro causou {dano_mon} de dano ao seu fantasma!", duration=3000)
         if vida_atual_fantasma <= 0:
-            status = 'fantasma_morreu'
+            status = 'derrota'
             break
 
         # Retorno ao fantasma
@@ -103,6 +104,7 @@ def usar_fantasma(
     """
     Executa loop completo de combate do fantasma vs monstro.
     Retorna (status, nova_vida_fantasma, nova_vida_monstro).
+    status: 'cancel', 'derrota', 'vitoria'
     """
     menu = MenuPyGame()
     cursor = criar_cursor()

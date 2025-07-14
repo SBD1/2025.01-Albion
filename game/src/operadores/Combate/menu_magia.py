@@ -52,13 +52,16 @@ def obter_magias_disponiveis(nivel_personagem):
             cursor.connection.close()
 
 def usar_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_monstro):
-    """Menu principal para usar magias"""
+    """Menu principal para usar magias. 
+    Retorna (status, mana_atual, vida_monstro).
+    status: 'cancel', 'vitoria', 'continue'
+    """
     menu = MenuPyGame()
     # Obtém informações do espiritualista
     info_espiritualista = obter_info_espiritualista(id_personagem)
     if not info_espiritualista:
         print("Erro: Personagem não é um espiritualista ou não foi encontrado.")
-        return None, None
+        return 'cancel', None, None
     nivel = info_espiritualista['nivel']
     nome = info_espiritualista['nome']
     mana_atual = info_espiritualista['mana_atual']
@@ -75,62 +78,64 @@ def usar_magia(id_personagem, id_instancia, defesa_magica_monstro, vida_atual_mo
             f"Nenhuma magia disponível para seu nível atual.\nNível: {nivel}",
             duration=3000
         )
-        return None, None
+        return 'cancel', None, None
     
-    while True:
-        # Menu de seleção de magia
-        subtitle = f"Espiritualista: {nome} | Nível: {nivel}\nMana: {mana_atual}/{mana_total}"
-        opcoes_menu = []
-        magias_validas = []
-        
-        for magia in magias_disponiveis:
-            # Verifica se tem mana suficiente
-            pode_usar = mana_atual >= magia['custo_mana']
-            status = "✓" if pode_usar else "✗"
-            
-            # Determina tipo da magia
-            if magia['dano_base'] > 0 and magia['cura_base'] > 0:
-                tipo = "Mista"
-            elif magia['dano_base'] > 0:
-                tipo = "Ofensiva"
-            elif magia['cura_base'] > 0:
-                tipo = "Cura"
-            else:
-                tipo = "Outras"
-            
-            opcao = f"{status} {magia['nome']} (Nv.{magia['nivel_requerido']}) - {tipo} - Custo: {magia['custo_mana']} mana"
-            opcoes_menu.append(opcao)
-            magias_validas.append(magia)
-        
-        opcoes_menu.append("Voltar")
-        
-        escolha = menu.set_menu("Escolha uma magia para conjurar:", opcoes_menu, subtitle=subtitle)
-        
-        if escolha == len(opcoes_menu) - 1:  # Voltar
-            return None, None
-        
-        magia_escolhida = magias_validas[escolha]
-        
+    # Menu de seleção de magia (UMA ÚNICA VEZ)
+    subtitle = f"Espiritualista: {nome} | Nível: {nivel}\nMana: {mana_atual}/{mana_total}"
+    opcoes_menu = []
+    magias_validas = []
+    
+    for magia in magias_disponiveis:
         # Verifica se tem mana suficiente
-        if mana_atual < magia_escolhida['custo_mana']:
-            menu.feedback("MAGIA", f"Mana insuficiente! Necessário {magia_escolhida['custo_mana']} mana.\nMana atual: {mana_atual}", duration=3000)
-            continue
+        pode_usar = mana_atual >= magia['custo_mana']
+        status = "✓" if pode_usar else "✗"
         
-        # Conjura a magia
-        resultado = conjurar_magia(
-            id_personagem, 
-            magia_escolhida, 
-            ataque_magico, 
-            defesa_magica_monstro, 
-            id_instancia, 
-            vida_atual_monstro
-        )
-        
-        if resultado:
-            nova_mana, nova_vida_monstro = resultado
-            return nova_mana, nova_vida_monstro
+        # Determina tipo da magia
+        if magia['dano_base'] > 0 and magia['cura_base'] > 0:
+            tipo = "Mista"
+        elif magia['dano_base'] > 0:
+            tipo = "Ofensiva"
+        elif magia['cura_base'] > 0:
+            tipo = "Cura"
         else:
-            continue
+            tipo = "Outras"
+        
+        opcao = f"{status} {magia['nome']} (Nv.{magia['nivel_requerido']}) - {tipo} - Custo: {magia['custo_mana']} mana"
+        opcoes_menu.append(opcao)
+        magias_validas.append(magia)
+    
+    opcoes_menu.append("Voltar")
+    
+    escolha = menu.set_menu("Escolha uma magia para conjurar:", opcoes_menu, subtitle=subtitle)
+    
+    if escolha == len(opcoes_menu) - 1:  # Voltar
+        return 'cancel', None, None
+    
+    magia_escolhida = magias_validas[escolha]
+    
+    # Verifica se tem mana suficiente
+    if mana_atual < magia_escolhida['custo_mana']:
+        menu.feedback("MAGIA", f"Mana insuficiente! Necessário {magia_escolhida['custo_mana']} mana.\nMana atual: {mana_atual}", duration=3000)
+        return 'cancel', None, None
+    
+    # Conjura a magia UMA VEZ e retorna imediatamente
+    resultado = conjurar_magia(
+        id_personagem, 
+        magia_escolhida, 
+        ataque_magico, 
+        defesa_magica_monstro, 
+        id_instancia, 
+        vida_atual_monstro
+    )
+    
+    if resultado:
+        nova_mana, nova_vida_monstro = resultado
+        # Verifica se monstro morreu
+        if nova_vida_monstro <= 0:
+            return 'vitoria', nova_mana, nova_vida_monstro
+        return 'continue', nova_mana, nova_vida_monstro
+    else:
+        return 'cancel', None, None
 
 def conjurar_magia(id_personagem, magia, ataque_magico, defesa_magica_monstro, id_instancia, vida_atual_monstro):
     """Executa a lógica de conjurar uma magia"""

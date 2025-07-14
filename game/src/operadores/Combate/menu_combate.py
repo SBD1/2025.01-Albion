@@ -1,6 +1,7 @@
 from database import criar_cursor
 from simple_term_menu import TerminalMenu
 from limpar_tela import limpar_tela
+import time
 from game.src.operadores.Combate.logica_ataque import logica_atacar, calcular_dano_fisico
 from operadores.Combate.menu_magia import menu_magia
 from operadores.Combate.menu_transformacao import menu_transformacao_draconico, iniciar_combate_draconico
@@ -9,8 +10,6 @@ from operadores.Combate.xp import aplicar_xp
 from operadores.Inventario.menu_inventario_pygame import menu_inventario_pygame
 from operadores.Menus.estrutura_menu_pygame import MenuPyGame
 # from operadores.drops.menu_drop import checar_drops
-
-import time
 
 def atualizar_stats_personagem(id_personagem):
     """
@@ -39,6 +38,31 @@ def atualizar_stats_personagem(id_personagem):
             if cursor:
                 cursor.connection.close()
             return None
+
+def atualizar_vida_monstro(id_instancia, monstro_stats):
+    """
+    Função utilitária para buscar a vida atual do monstro do banco de dados
+    e atualizar o dicionário monstro_stats.
+    """
+    cursor = criar_cursor()
+    if not cursor:
+        return monstro_stats
+    
+    try:
+        cursor.execute(
+            "SELECT vida_atual FROM public.instancia_npc_generico WHERE id_instancia = %s;",
+            (id_instancia,)
+        )
+        monstro_row = cursor.fetchone()
+        if monstro_row:
+            monstro_stats['vida_atual'] = monstro_row['vida_atual']
+            return monstro_row['vida_atual']
+    except Exception as e:
+        print(f"Erro ao atualizar vida do monstro: {e}")
+    finally:
+        cursor.connection.close()
+    
+    return monstro_stats.get('vida_atual', 0)
 
 def checar_personagem(id_personagem):
     cursor = criar_cursor()
@@ -188,6 +212,29 @@ def iniciar_combate(id_personagem, id_sala):
     # Loop de combate com turnos alternados
     turno = 'personagem'
     while vida_atual_monstro > 0 and vida_atual_personagem > 0:
+        
+        # Se for turno do monstro, processa o ataque dele primeiro
+        if turno == 'monstro':
+            menu.feedback("TURNO", "É a vez do monstro!", duration=2000)
+            dmg_fisico = calcular_dano_fisico(ataque_fisico_monstro, defesa_fisica_personagem)
+            dmg_magico = calcular_dano_fisico(ataque_magico_monstro, defesa_magica_personagem)
+            dano_monstro = dmg_fisico + dmg_magico
+            vida_atual_personagem = max(0, vida_atual_personagem - dano_monstro)
+            criar_cursor().execute(
+                "UPDATE PERSONAGEM SET vida_atual = %s WHERE id_personagem = %s;",
+                (vida_atual_personagem, id_personagem)
+            )
+            menu.feedback("ATAQUE INIMIGO", f"Você recebeu {dano_monstro} de dano!", duration=3000)
+            
+            # Se jogador morrer
+            if vida_atual_personagem <= 0:
+                aplicar_derrota(id_personagem, personagem, menu)
+                return "derrota"
+            
+            # Volta para o turno do personagem
+            turno = 'personagem'
+            menu.feedback("TURNO", "Seu turno!", duration=2000)
+        
         # Monta status sem tracking de turnos dracônico
         status_info = {
              'monstro': {
@@ -235,60 +282,11 @@ def iniciar_combate(id_personagem, id_sala):
             # Se monstro morrer
             if vida_atual_monstro <= 0:
                 menu.feedback("VITÓRIA", f"{npc['especie']} derrotado!", duration=4000)
-                
-                # Adiciona ouro do drop ao personagem
-                ouro_drop = npc_gen['drop_ouro']
-                cursor_ouro = criar_cursor()
-                cursor_ouro.execute(
-                    "UPDATE PERSONAGEM SET qtd_ouro = qtd_ouro + %s WHERE id_personagem = %s;",
-                    (ouro_drop, id_personagem)
-                )
-                cursor_ouro.connection.commit()
-                cursor_ouro.connection.close()
-                menu.feedback("OURO", f"Você ganhou {ouro_drop} moedas de ouro!", duration=3000)
-                
-                xp_monstro = npc_gen['xp']
-                for msg in aplicar_xp(id_personagem, xp_monstro):
-                    menu.feedback("XP", msg, duration=3000)
+                aplicar_vitoria(id_personagem, npc_gen, menu)
                 return "vitoria"
             
-            # Turno do monstro
-            menu.feedback("TURNO", "É a vez do monstro!", duration=3000)
-            dmg_fisico = calcular_dano_fisico(ataque_fisico_monstro, defesa_fisica_personagem)
-            dmg_magico = calcular_dano_fisico(ataque_magico_monstro, defesa_magica_personagem)
-            dano_monstro = dmg_fisico + dmg_magico
-            vida_atual_personagem = max(0, vida_atual_personagem - dano_monstro)
-            criar_cursor().execute(
-                "UPDATE PERSONAGEM SET vida_atual = %s WHERE id_personagem = %s;",
-                (vida_atual_personagem, id_personagem)
-            )
-            menu.feedback("ATAQUE INIMIGO", f"Você recebeu {dano_monstro} de dano!", duration=3000)
-            
-            # Se jogador morrer
-            if vida_atual_personagem <= 0:
-                cursor_f = criar_cursor()
-                # Reduz 10% de EXP
-                xp_atual = personagem['exp_atual']
-                perda_xp = int(xp_atual * 0.1)
-                novo_xp = max(0, xp_atual - perda_xp)
-                cursor_f.execute("UPDATE public.personagem SET exp_atual = %s WHERE id_personagem = %s;", (novo_xp, id_personagem))
-                # Teleporta para sala 1
-                cursor_f.execute("UPDATE public.personagem SET id_sala = 1 WHERE id_personagem = %s;", (id_personagem,))
-                # Restaura vida e stamina
-                cursor_f.execute("UPDATE public.personagem SET vida_atual = %s, stamina_atual = %s WHERE id_personagem = %s;", (vida_maxima_personagem, stamina_maxima_personagem, id_personagem))
-                # Restaura mana do espiritualista
-                cursor_f.execute("UPDATE public.espiritualista SET mana_atual = mana_total WHERE id_personagem = %s;", (id_personagem,))
-                # Restaura vida do fantasma
-                id_esp, _ = checar_especie(id_personagem)
-                if id_esp == 1:
-                    cursor_f.execute(
-                        "UPDATE public.fantasma SET vida_atual = vida_maxima WHERE id_fantasma = (SELECT id_fantasma FROM public.zoiudo WHERE id_personagem = %s);", (id_personagem,)
-                    )
-                cursor_f.connection.commit()
-                menu.feedback("DERROTA", f"Você morreu e foi teleportado para a Praça Central! Perdeu {perda_xp} EXP.", duration=4000)
-                return "derrota"
-        
-            menu.feedback("TURNO", "Seu turno!", duration=3000)
+            # Passa para o turno do monstro
+            turno = 'monstro'
             continue
 
         # Chama menu fantasma
@@ -303,61 +301,37 @@ def iniciar_combate(id_personagem, id_sala):
             if personagem_atualizado:
                 stamina_atual_personagem = personagem_atualizado['stamina_atual']
             
+            # Atualizar vida do monstro do banco de dados
+            vida_atual_monstro = atualizar_vida_monstro(id_instancia, monstro_stats)
+            
             if status_f == 'cancel':
                 continue
 
-            if status_f == 'fantasma_morreu':
+            if status_f == 'derrota':
                 menu.feedback("FANTASMA", "Seu fantasma foi derrotado!", duration=2000)
-                menu.feedback("TURNO", "É o seu turno!", duration=1000)
+                # Passa para o turno do monstro
+                turno = 'monstro'
                 continue
 
-            if status_f == 'monstro_morto_fantasma':
+            elif status_f == 'vitoria':
                 menu.feedback("VITÓRIA", f"{npc['especie']} derrotado pelo Fantasma!", duration=2000)
-                
-                # Adiciona ouro do drop ao personagem
-                ouro_drop = npc_gen['drop_ouro']
-                cursor_ouro = criar_cursor()
-                cursor_ouro.execute(
-                    "UPDATE PERSONAGEM SET qtd_ouro = qtd_ouro + %s WHERE id_personagem = %s;",
-                    (ouro_drop, id_personagem)
-                )
-                cursor_ouro.connection.commit()
-                cursor_ouro.connection.close()
-                menu.feedback("OURO", f"Você ganhou {ouro_drop} moedas de ouro!", duration=2000)
-                
-                xp_valor = npc_gen['xp']
-                for msg in aplicar_xp(id_personagem, xp_valor):
-                    menu.feedback("XP", msg, duration=2000)
+                aplicar_vitoria(id_personagem, npc_gen, menu)
                 return "vitoria"
             
             # Fantasma causou dano parcial
             if vida_m_nova is not None:
                 vida_atual_monstro = vida_m_nova
+                # Não precisa mais atualizar monstro_stats aqui pois já foi feito pela função
                 dano_f = prev_monstro - vida_atual_monstro
                 menu.feedback("ATAQUE FANTASMA", f"Fantasma causou {dano_f} de dano!", duration=2000)
-
-                menu.feedback("TURNO", "É a vez do monstro!", duration=1000)
-                fis = calcular_dano_fisico(ataque_fisico_monstro, defesa_fisica_personagem)
-                mag = calcular_dano_fisico(ataque_magico_monstro, defesa_magica_personagem)
-                dmg_tot = fis + mag
-                vida_atual_personagem = max(0, vida_atual_personagem - dmg_tot)
-                criar_cursor().execute(
-                    "UPDATE PERSONAGEM SET vida_atual = %s WHERE id_personagem = %s;",
-                    (vida_atual_personagem, id_personagem)
-                )
-                menu.feedback("ATAQUE INIMIGO", f"Monstro causou {dmg_tot} de dano!", duration=1500)
-                if vida_atual_personagem <= 0:
-                    # Jogador morreu
-                    menu.feedback("DERROTA", "Você morreu!", duration=2000)
-                    return "derrota"
-                # Retorno ao jogador
-                menu.feedback("TURNO", "Seu turno!", duration=1000)
+                # Passa para o turno do monstro
+                turno = 'monstro'
                 continue
 
         elif acao == "✨ Usar Magia":
             # Executa magia e mostra feedback de dano mágico
             vida_antiga = vida_atual_monstro
-            resultado = menu_magia(
+            status_m, mana_atual, vida_m_nova = menu_magia(
                 id_personagem,
                 id_instancia,
                 monstro_stats
@@ -368,33 +342,20 @@ def iniciar_combate(id_personagem, id_sala):
             if personagem_atualizado:
                 stamina_atual_personagem = personagem_atualizado['stamina_atual']
             
-            if resultado and resultado[0] is not None and resultado[1] is not None:
-                vida_atual_monstro = resultado[1]
+            # Atualizar vida do monstro do banco de dados
+            vida_atual_monstro = atualizar_vida_monstro(id_instancia, monstro_stats)
+            
+            if status_m == 'cancel':
+                continue
+            elif status_m == 'vitoria':
+                menu.feedback("VITÓRIA", f"{npc['especie']} derrotado pela magia!", duration=4000)
+                aplicar_vitoria(id_personagem, npc_gen, menu)
+                return "vitoria"
+            elif status_m == 'continue':
                 dano_magico_turno = vida_antiga - vida_atual_monstro
                 menu.feedback("MAGIA", f"Você causou {dano_magico_turno} de dano mágico!", duration=2000)
-                
-                # Verifica se o monstro morreu com a magia
-                if vida_atual_monstro <= 0:
-                    menu.feedback("VITÓRIA", f"{npc['especie']} derrotado pela magia!", duration=4000)
-                    
-                    # Adiciona ouro do drop ao personagem
-                    ouro_drop = npc_gen['drop_ouro']
-                    cursor_ouro = criar_cursor()
-                    cursor_ouro.execute(
-                        "UPDATE PERSONAGEM SET qtd_ouro = qtd_ouro + %s WHERE id_personagem = %s;",
-                        (ouro_drop, id_personagem)
-                    )
-                    cursor_ouro.connection.commit()
-                    cursor_ouro.connection.close()
-                    menu.feedback("OURO", f"Você ganhou {ouro_drop} moedas de ouro!", duration=3000)
-                    
-                    xp_monstro = npc_gen['xp']
-                    for msg in aplicar_xp(id_personagem, xp_monstro):
-                        menu.feedback("XP", msg, duration=3000)
-                    return "vitoria"
-                
+                # Passa para o turno do monstro
                 turno = 'monstro'
-            else:
                 continue
             
         elif acao == "🔥 Transformação Dracônica":
@@ -405,7 +366,7 @@ def iniciar_combate(id_personagem, id_sala):
             # Inicia combate específico de dracônico
             status = iniciar_combate_draconico(id_personagem, id_instancia, monstro_stats)
             
-            # Atualizar stats do personagem após retornar do submenu dracônico
+            # Atualizar stats do personagem após retornar do submenu draconico
             personagem_atualizado = atualizar_stats_personagem(id_personagem)
             if personagem_atualizado:
                 vida_atual_personagem = personagem_atualizado['vida_atual']
@@ -414,12 +375,16 @@ def iniciar_combate(id_personagem, id_sala):
                 defesa_fisica_personagem = personagem_atualizado['defesa_fisica']
                 defesa_magica_personagem = personagem_atualizado['defesa_magica']
             
-            # Bônus aplicados e revertidos pelo menu_transformacao_draconico
-            # Fecha submenu e retorna ao combate principal
+            # Atualizar vida do monstro usando a nova função utilitária
+            vida_atual_monstro = atualizar_vida_monstro(id_instancia, monstro_stats)
+            
+            # Aplicar consequências baseadas no resultado
             if status == 'vitoria':
+                aplicar_vitoria(id_personagem, npc_gen, menu)
                 return 'vitoria'
             elif status == 'derrota':
-                return 'derrota'
+                return aplicar_derrota(id_personagem, personagem, menu)
+            # Se 'cancel', continua o combate normal
             continue
         elif acao == "🎒 Inventário":
             inv_res = menu_inventario_pygame(id_personagem)
@@ -446,56 +411,61 @@ def iniciar_combate(id_personagem, id_sala):
         
         continue
     
-    # Verifica se o personagem morreu
-    if vida_atual_personagem <= 0:
-        limpar_tela()
-        print("Você foi derrotado pelo monstro e morreu!")
-        time.sleep(3)
+    # Se chegou aqui, saiu do loop sem vitória ou derrota explícita
+    return
 
-        # Reduz 10% do XP atual
-        xp_atual = personagem['exp_atual']
-        perda_xp = int(xp_atual * 0.1)
-        novo_xp = max(0, xp_atual - perda_xp)
+def aplicar_vitoria(id_personagem, npc_gen, menu):
+    """
+    Centraliza toda a lógica de vitória: adiciona ouro e XP.
+    """
+    # Adiciona ouro do drop ao personagem
+    ouro_drop = npc_gen['drop_ouro']
+    cursor_ouro = criar_cursor()
+    cursor_ouro.execute(
+        "UPDATE PERSONAGEM SET qtd_ouro = qtd_ouro + %s WHERE id_personagem = %s;",
+        (ouro_drop, id_personagem)
+    )
+    cursor_ouro.connection.commit()
+    cursor_ouro.connection.close()
+    menu.feedback("OURO", f"Você ganhou {ouro_drop} moedas de ouro!", duration=3000)
+    
+    # Aplica XP
+    xp_monstro = npc_gen['xp']
+    for msg in aplicar_xp(id_personagem, xp_monstro):
+        menu.feedback("XP", msg, duration=3000)
 
-        # Atualiza EXP, sala e vida
-        cursor = criar_cursor()
-        cursor.execute(
-            "UPDATE public.personagem SET exp_atual = %s WHERE id_personagem = %s;",
-            (novo_xp, id_personagem)
-        )
-        cursor.execute(
-            "UPDATE public.personagem SET id_sala = %s WHERE id_personagem = %s;",
-            (1, id_personagem)
-        )
-        cursor.execute(
-            "UPDATE public.personagem SET vida_atual = %s WHERE id_personagem = %s;",
-            (vida_maxima_personagem, id_personagem)
-        )
-        cursor.execute(
-            "UPDATE public.personagem SET stamina_atual = %s WHERE id_personagem = %s;",
-            (stamina_maxima_personagem, id_personagem)
-        )
-        # Restaura mana do espiritualista ao máximo
-        cursor.execute(
-            "UPDATE public.espiritualista SET mana_atual = mana_total WHERE id_personagem = %s;",
+def aplicar_derrota(id_personagem, personagem, menu):
+    """
+    Centraliza toda a lógica de derrota: reduz XP, teleporta, restaura stats.
+    """
+    cursor_f = criar_cursor()
+    # Reduz 10% de EXP
+    xp_atual = personagem['exp_atual']
+    perda_xp = int(xp_atual * 0.1)
+    novo_xp = max(0, xp_atual - perda_xp)
+    cursor_f.execute("UPDATE public.personagem SET exp_atual = %s WHERE id_personagem = %s;", (novo_xp, id_personagem))
+    
+    # Teleporta para sala 1
+    cursor_f.execute("UPDATE public.personagem SET id_sala = 1 WHERE id_personagem = %s;", (id_personagem,))
+    
+    # Restaura vida e stamina
+    vida_maxima = personagem['vida_maxima']
+    stamina_maxima = personagem['stamina_maxima']
+    cursor_f.execute("UPDATE public.personagem SET vida_atual = %s, stamina_atual = %s WHERE id_personagem = %s;", 
+                     (vida_maxima, stamina_maxima, id_personagem))
+    
+    # Restaura mana do espiritualista
+    cursor_f.execute("UPDATE public.espiritualista SET mana_atual = mana_total WHERE id_personagem = %s;", (id_personagem,))
+    
+    # Restaura vida do fantasma se for Zoiudo
+    id_esp, _ = checar_especie(id_personagem)
+    if id_esp == 1:
+        cursor_f.execute(
+            "UPDATE public.fantasma SET vida_atual = vida_maxima WHERE id_fantasma = (SELECT id_fantasma FROM public.zoiudo WHERE id_personagem = %s);", 
             (id_personagem,)
         )
-        # Restaura vida do fantasma ao máximo se for Zoiudo
-        id_especie, _ = checar_especie(id_personagem)
-        if id_especie == 1:
-            cursor.execute(
-                "UPDATE public.fantasma SET vida_atual = vida_maxima WHERE id_fantasma = (SELECT id_fantasma FROM public.zoiudo WHERE id_personagem = %s);",
-                (id_personagem,)
-            )
-        cursor.connection.commit()
-        print(f"Você perdeu {perda_xp} pontos de EXP.")
-        time.sleep(3)
-        limpar_tela()
-        print("Você foi levado para a Praça Central para receber cuidados.")
-        time.sleep(3)
-
-        menu = TerminalMenu(["OK"], title="Pressione OK para retornar ao mapa.")
-        menu.show()
-        return "mudar_sala"
     
-    return
+    cursor_f.connection.commit()
+    cursor_f.connection.close()
+    menu.feedback("DERROTA", f"Você morreu e foi teleportado para a Praça Central! Perdeu {perda_xp} EXP.", duration=4000)
+    return "derrota"
