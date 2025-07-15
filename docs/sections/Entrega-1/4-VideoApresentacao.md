@@ -1,3 +1,1 @@
-##Vídeo de Apresentação
-A seguir, assista ao vídeo de apresentação em que o grupo explica todos os detalhes desta primeira entrega do banco de dados inspirado em Albion.
-[ENTREGA 1 - SGBD1 ](https://www.youtube.com/watch?v=fbDRujQFL7Q)
+<iframe width="1351" height="480" src="https://www.youtube.com/embed/fbDRujQFL7Q" title="ENTREGA 1 - SGBD1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
